@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Actor\Shape\Sphere.cpp" />
+    <ClCompile Include="Src\Object\Actor\Shape\ShapeBase.cpp" />
     <ClCompile Include="Src\Object\Actor\System\CollisionSystem\CollisionLogic.cpp" />
     <ClCompile Include="Src\Object\Actor\System\CollisionSystem\CollisionSystem.cpp" />
     <ClCompile Include="Src\Object\Actor\Collider\ColliderBox.cpp" />
@@ -176,7 +178,10 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Shape\Sphere.h" />
+    <ClInclude Include="Src\Object\Actor\Shape\ShapeBase.h" />
     <ClInclude Include="Src\Object\Actor\System\CollisionSystem\CollisionLogic.h" />
+    <ClInclude Include="Src\Object\Actor\System\CollisionSystem\CollisionPairType.h" />
     <ClInclude Include="Src\Object\Actor\System\CollisionSystem\CollisionSystem.h" />
     <ClInclude Include="Src\Object\Actor\Collider\ColliderBox.h" />
     <ClInclude Include="Src\Object\Actor\Collider\ColliderCapsule.h" />

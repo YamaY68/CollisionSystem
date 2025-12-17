@@ -35,7 +35,7 @@ public:
 
 
    //デストラクタ
-   virtual ~ColliderBase(void);  
+   virtual ~ColliderBase(void) = default;
 
    // 初期化  
    virtual void Init(void);  

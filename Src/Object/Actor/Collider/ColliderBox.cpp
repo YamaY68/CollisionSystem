@@ -92,5 +92,5 @@ void ColliderBox::DrawDebug(int color)
 	}
 
 	//’†S“_
-	DrawSphere3D(center, 2.0f, 8, color, color, true);
+	DrawSphere3D(center, 2.0f, 8, color, color, false);
 }

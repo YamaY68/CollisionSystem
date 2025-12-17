@@ -82,5 +82,5 @@ void ColliderCapsule::DrawDebug(int color)
 	DrawSide(VScale(forward, -1));
 
 	// ’†S
-	DrawSphere3D(GetCenter(), 4.0f, 6, color, color, true);
+	DrawSphere3D(GetCenter(), 4.0f, 6, color, color, false);
 }

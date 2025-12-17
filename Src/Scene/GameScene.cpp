@@ -7,6 +7,10 @@
 
 
 #include"../Object/Actor/ActorBase.h"
+
+#include"../Object/Actor/Shape/ShapeBase.h"
+#include"../Object/Actor/Shape/Sphere.h"
+
 GameScene::GameScene(void):
 	SceneBase()
 {
@@ -36,12 +40,20 @@ std::vector<std::shared_ptr<T>> ObjSearch(const std::vector<std::shared_ptr<Acto
 	return out;
 }
 void GameScene::Load(void)  
-{  
-
+{ 
+	// オブジェクト生成
+	actors_.push_back(std::make_shared<Sphere>());
+	// カメラ生成
+	auto camera = std::make_shared<Camera>();
+	actors_.push_back(camera);
 
 }
 void GameScene::Init(void)
 {
+	for (auto& actor : actors_)
+	{
+		actor->Init();
+	}
 }
 
 void GameScene::Update(void)
@@ -51,6 +63,8 @@ void GameScene::Update(void)
 	{
 		actor->Update();
 	}
+
+	collisionSystem_.Check();
 }
 
 void GameScene::Draw(void)
@@ -59,6 +73,10 @@ void GameScene::Draw(void)
 	for (auto& actor : actors_)
 	{
 		actor->Draw();
+		for (const auto& [shape, collider] : actor->GetOwnColliders())
+		{
+			collider->Draw();
+		}
 	}
 }
 

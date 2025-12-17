@@ -26,6 +26,6 @@ void ColliderSphere::DrawDebug(int color)
 		16,
 		color,
 		color,
-		true
+		false
 	);
 }

@@ -13,9 +13,8 @@ void ActorBase::Load(void)
 
 void ActorBase::Init(void)
 {
-	ColliderInit();
-	SensorColliderInit();
 	SubInit();
+	InitCollider();
 }
 
 void ActorBase::Update(void)
@@ -26,46 +25,11 @@ void ActorBase::Update(void)
 void ActorBase::Draw(void)
 {
 	SubDraw();
-#ifdef _DEBUG
-	// 所有しているコライダの描画
-	for (const auto& own : ownColliders_)
-	{
-		own.second->Draw();
-	}
-#endif // _DEBUG
 }
 
 void ActorBase::Release(void)
 {
 	SubRelease();
-	// 自身のコライダ解放
-	ownColliders_.clear();
-}
 
-
-const ColliderBase* ActorBase::GetOwnCollider(int key) const  
-{  
-   if (ownColliders_.count(key) == 0)  
-   {  
-       return nullptr;  
-   }  
-   return ownColliders_.at(key).get();
 }
-void ActorBase::AddHitCollider(const ColliderBase* hitCollider)
-{
-	for (const auto& c : hitColliders_)
-	{
-		if (c == hitCollider)
-		{
-			return;
-		}
-	}
-	hitColliders_.emplace_back(hitCollider);
-}
-
-void ActorBase::ClearHitColliders(void)
-{
-	hitColliders_.clear();
-}
-
 

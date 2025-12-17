@@ -24,9 +24,7 @@ ColliderBase::ColliderBase(ColliderInfo& info)
 
 }
 
-ColliderBase::~ColliderBase(void)
-{
-}
+
 
 void ColliderBase::Init(void)
 {

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-
+#include"../Object/Actor/System/CollisionSystem/CollisionSystem.h"
 
 
 class ActorBase;
@@ -31,7 +31,8 @@ public:
 	void Release(void) override;
 private:
 	std::vector<std::shared_ptr<ActorBase>> actors_;
-
+	// Õ“Ë”»’èƒVƒXƒeƒ€
+	CollisionSystem collisionSystem_;
 
 private:
 	int ShadowMapHandle_ = -1;

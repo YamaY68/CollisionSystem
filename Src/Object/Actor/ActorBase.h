@@ -25,25 +25,16 @@ public:
 
 	const Transform& GetTransform(void) { return trans_; }
 
-	// 自身の衝突情報取得
-	const std::map<int, std::shared_ptr<ColliderBase>>& GetOwnColliders(void) const
-	{
-		return ownColliders_;
-	}
-	// 特定の自身の衝突情報取得
-	const ColliderBase* GetOwnCollider(int key) const;
-
 	void SetEntityId(int id) { entityId_ = id; }
 	int GetEntityId(void) const { return entityId_; }
 
 	VECTOR& GetVelocity(void) {return vel_; }
 
 	bool IsDynamic(void) {return isDynamic_; }
-	// 衝突対象のコライダーを追加
-	void AddHitCollider(const ColliderBase* hitCollider);
 
-	//衝突対象のコライダーをクリア
-	void ClearHitColliders(void);
+	//自身のコライダーリスト取得
+	const std::map<int, std::shared_ptr<ColliderBase>>& GetOwnColliders(void) const { return ownColliders_; }
+
 protected:
 	virtual void SubLoad(void) {};
 	virtual void SubInit(void) {};
@@ -51,18 +42,13 @@ protected:
 	virtual void SubDraw(void) {};
 	virtual void SubRelease(void) {};
 
-	virtual void ColliderInit() {};
-	virtual void SensorColliderInit() {};
+	virtual void InitCollider(void) {};
+
+
 
 protected:
 	AnimationController* animationController_ = nullptr;
 	Transform trans_;
-
-	// 自身の衝突情報
-	std::map<int, std::shared_ptr<ColliderBase>> ownColliders_;
-
-	//衝突対象の情報
-	std::vector<const ColliderBase*> hitColliders_;
 	
 	int entityId_ = -1;
 	// 移動前の座標
@@ -75,9 +61,9 @@ protected:
 	float speed_=0;
 
 	//動的か静的か
-	bool isDynamic_=false;
+	bool isDynamic_=true;
 
-protected:
-
+	//自身のコライダーリスト
+	std::map<int, std::shared_ptr<ColliderBase>> ownColliders_;
 };
 
