@@ -43,6 +43,9 @@ void GameScene::Load(void)
 { 
 	// オブジェクト生成
 	actors_.push_back(std::make_shared<Sphere>());
+	std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+	sphere->GetTransform().pos = VGet(200.0f, 0.0f, 0.0f);
+	actors_.push_back(sphere);
 	// カメラ生成
 	auto camera = std::make_shared<Camera>();
 	actors_.push_back(camera);

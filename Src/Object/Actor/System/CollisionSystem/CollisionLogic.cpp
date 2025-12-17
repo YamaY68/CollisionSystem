@@ -1,7 +1,10 @@
 #include "CollisionLogic.h"  
 #include <type_traits>  
 #include <algorithm>  
+
 #include"../../Collider/ColliderBase.h"
+
+#include"../../Collider/ColliderSphere.h"
 
 CollisionLogic::CollisionLogic()  
 {  
@@ -75,7 +78,40 @@ CollisionLogic::CollisionResult CollisionLogic::DispatchCollision(CollisionPairT
 
 CollisionLogic::CollisionResult CollisionLogic::SphereToSphere(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
-    return CollisionResult();
+	CollisionResult result;
+
+	//コライダーをキャスト
+	auto sphereA = std::dynamic_pointer_cast<ColliderSphere>(a);
+	auto sphereB = std::dynamic_pointer_cast<ColliderSphere>(b);
+
+	//座標取得
+	VECTOR posA = a->GetFollow()->pos;
+	VECTOR posB = b->GetFollow()->pos;
+
+	//半径取得
+	float radiusA = sphereA->GetRadius();
+	float radiusB = sphereB->GetRadius();
+
+	//中心間ベクトル
+	VECTOR diff = VSub(posB, posA);
+	//距離
+	float distance = VSize(diff);
+
+	//半径和
+	float sumRadius = radiusA + radiusB;
+
+	//衝突判定
+    if (distance > sumRadius)return;
+	//衝突あり
+	result.isHit = true;
+	//衝突法線計算
+	result.normal = VScale(diff, 1.0f / distance);
+    
+    //めり込み量
+	result.penetration = sumRadius - distance;
+
+
+    return result;
 }
 
 CollisionLogic::CollisionResult CollisionLogic::SphereToCapsule(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)

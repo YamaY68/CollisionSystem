@@ -23,7 +23,7 @@ public:
 	//‰ð•ú
 	void Release(void);
 
-	const Transform& GetTransform(void) { return trans_; }
+	Transform& GetTransform(void) { return trans_; }
 
 	void SetEntityId(int id) { entityId_ = id; }
 	int GetEntityId(void) const { return entityId_; }
