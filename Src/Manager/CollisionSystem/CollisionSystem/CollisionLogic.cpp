@@ -2,9 +2,10 @@
 #include <type_traits>  
 #include <algorithm>  
 
-#include"../../Collider/ColliderBase.h"
+#include"../../../Object/Actor/Collider/ColliderInfo.h"
+#include"../../../Object/Actor/Collider/ColliderBase.h"
 
-#include"../../Collider/ColliderSphere.h"
+#include"../../../Object/Actor/Collider/ColliderSphere.h"
 
 CollisionLogic::CollisionLogic()  
 {  
@@ -76,43 +77,82 @@ CollisionLogic::CollisionResult CollisionLogic::DispatchCollision(CollisionPairT
 	return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::SphereToSphere(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionLogic::CollisionResult
+CollisionLogic::SphereToSphere(
+    const std::shared_ptr<ColliderBase>& a,
+    const std::shared_ptr<ColliderBase>& b)
 {
-	CollisionResult result;
+	// 2つの球の衝突判定
+    CollisionResult result;
 
-	//コライダーをキャスト
-	auto sphereA = std::dynamic_pointer_cast<ColliderSphere>(a);
-	auto sphereB = std::dynamic_pointer_cast<ColliderSphere>(b);
+	//念のため型変換
+    auto sphereA = std::dynamic_pointer_cast<ColliderSphere>(a);
+    auto sphereB = std::dynamic_pointer_cast<ColliderSphere>(b);
+	// 型変換に失敗したら衝突判定を行わない
+    if (!sphereA || !sphereB) return result;
 
-	//座標取得
-	VECTOR posA = a->GetFollow()->pos;
-	VECTOR posB = b->GetFollow()->pos;
+	// 球の中心位置
+    VECTOR posA = a->GetFollow()->pos;
+    VECTOR posB = b->GetFollow()->pos;
 
-	//半径取得
-	float radiusA = sphereA->GetRadius();
-	float radiusB = sphereB->GetRadius();
+	// 球の半径
+    float rA = sphereA->GetRadius();
+    float rB = sphereB->GetRadius();
 
-	//中心間ベクトル
-	VECTOR diff = VSub(posB, posA);
-	//距離
-	float distance = VSize(diff);
+	// 2つの球の中心間のベクトル差
+    VECTOR diff = VSub(posB, posA);
 
-	//半径和
-	float sumRadius = radiusA + radiusB;
+	// 中心間の距離の2乗
+    float distSq = diff.x * diff.x + diff.y * diff.y+diff.z*diff.z;
+	// 半径の和
+    float sumR = rA + rB;
+	// 衝突していなければ終了
+    if (distSq > sumR * sumR) return result;
+	// 衝突している場合の情報を設定
+    result.isHit = true;
+	// 特殊ケース：中心が重なっている場合
+    if (distSq < 0.001f)
+    {
+        result.normal = VGet(1, 0, 0);
+        result.penetration = sumR;
+        return result;
+    }
+	// 通常ケース
+    else
+    {
+		// 押し出し方向と深さの計算
+		// 距離の計算
+        float dist = sqrtf(distSq);
+		// 押し出し方向（法線ベクトル）の計算
+        result.normal = VScale(diff, 1.0f / dist);
+		// 押し出し深さの計算
+        result.penetration = sumR - dist;
+    }
+    //押し出し計算
+    const ColliderInfo& infoA = a->GetColliderInfo();
+	const ColliderInfo& infoB = b->GetColliderInfo();
 
-	//衝突判定
-    if (distance > sumRadius)return;
-	//衝突あり
-	result.isHit = true;
-	//衝突法線計算
-	result.normal = VScale(diff, 1.0f / distance);
+	// トリガー判定
+    if (infoA.isTrigger || infoB.isTrigger)
+        return result;
+	//お互いが静的なら押し出し計算を行わない
+    if (!infoA.isDynamic && !infoB.isDynamic)
+		return result;
     
-    //めり込み量
-	result.penetration = sumRadius - distance;
+	//どちらかが静的ならもう片方を全押し出し
+	float weightA = infoA.isDynamic ? infoA.weight : 0.0f;
+	float weightB = infoB.isDynamic ? infoB.weight : 0.0f;
+
+    //正規化用比重
+	float totalWeight = weightA + weightB;
+    result.penetration *= 0.8f;
+	result.pushA = result.penetration * (weightB / totalWeight);
+	result.pushB = result.penetration * (weightA / totalWeight);
 
 
     return result;
 }
+
 
 CollisionLogic::CollisionResult CollisionLogic::SphereToCapsule(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {

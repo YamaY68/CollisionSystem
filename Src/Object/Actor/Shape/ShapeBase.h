@@ -6,15 +6,17 @@ class ShapeBase :
 {
 public:
 	ShapeBase(void);
+	ShapeBase(int color);
 	~ShapeBase(void) override;
 
-private:
+protected:
 	void SubInit(void) override;
 	void SubUpdate(void) override;
 	void SubDraw(void) override;
 	void SubRelease(void) override;
 
-private:
-
+protected:
+	// å`èÛÇÃêF
+	int color;
 };
 

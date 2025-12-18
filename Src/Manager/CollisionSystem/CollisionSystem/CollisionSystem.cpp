@@ -16,6 +16,27 @@ CollisionSystem::~CollisionSystem(void)
 	Clear();
 }
 
+void CollisionSystem::AddCollider(const std::map<int, std::shared_ptr<ColliderBase>>& collider)
+{
+	// コライダー登録
+	for (auto& c : collider)
+	{
+		if (c.second->GetColliderInfo().isDynamic)
+		{
+			// 動的コライダー登録
+			AddDynamicCollider(c.second);
+		}
+		else
+		{
+			// 静的コライダー登録
+			AddStaticCollider(c.second);
+		}
+	}
+
+}
+
+
+
 void CollisionSystem::AddDynamicCollider(const std::shared_ptr<ColliderBase>& collider)
 {
 	// 動的コライダー登録
@@ -42,7 +63,7 @@ void CollisionSystem::Check()
 	// アクティブなコライダーを取得
     GetActiveColliders();
 	// 衝突判定処理
-    for (int loop = 0; loop < MAX_COLLISION_COUNT; ++loop)
+    for (int loop = 0; loop < 1; ++loop)
     {
         for (size_t i = 0; i < activeDynamicColliders_.size(); ++i)
         {
@@ -78,14 +99,26 @@ void CollisionSystem::CollisionCheck(const std::shared_ptr<ColliderBase>& a, con
     if (!result.isHit)return;
 	// めり込み許容値以下なら処理しない
 	if (result.penetration < PENETRATION_ALLOWANCE)return;
-	// 衝突解決
-	if (result.affectA)
+
+	//押し出し処理
+	if (result.pushA > 0.0f)
 	{
-		a->GetFollow()->pos = VSub(a->GetFollow()->pos, VScale(result.normal, result.penetration));
+		//デバッグしやすいように変数に格納
+		VECTOR& posA = a->GetFollow()->pos;
+		//VECTOR normal = VScale(result.normal, -1.0f);
+		VECTOR push = VScale(result.normal, result.pushA);
+		posA = VSub(
+			posA, push
+		);
 	}
-	if (result.affectB)
+	if (result.pushB > 0.0f)
 	{
-		b->GetFollow()->pos = VAdd(b->GetFollow()->pos, VScale(VScale(result.normal,-1), result.penetration));
+		//デバッグしやすいように変数に格納
+		VECTOR& posB = b->GetFollow()->pos;
+		VECTOR push = VScale(result.normal, result.pushB);
+		posB = VAdd(
+			posB,push
+		);
 	}
 }
 void CollisionSystem::GetActiveColliders()

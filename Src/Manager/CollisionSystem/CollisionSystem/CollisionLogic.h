@@ -3,7 +3,7 @@
 #include<DxLib.h>
 #include<memory>
 #include"CollisionPairType.h"
-#include"../../Collider/ColliderShape.h"
+#include"../../../Object/Actor/Collider/ColliderShape.h"
 class ColliderBase;
 
 class CollisionLogic
@@ -14,13 +14,12 @@ public:
 		bool isHit = false;
 
 		// 接触情報（共通）
-		VECTOR hitPoint;   // 接触点（中点 or 代表点）
 		VECTOR normal;         // A → B 方向の法線
+		
 		float penetration;    // めり込み量
 
-		// どちらが動くか用
-		bool affectA = true;
-		bool affectB = true;
+		float pushA = 0.0f;     // A に適用する押し出し量
+		float pushB = 0.0f;     // B に適用する押し出し量
 	};
 public:
 	//コンストラクタ
@@ -64,6 +63,7 @@ private:
 		const std::shared_ptr<ColliderBase>& a,
 		const std::shared_ptr<ColliderBase>& b);
 
+private:
 
 };
 

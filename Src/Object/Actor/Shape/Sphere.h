@@ -5,6 +5,7 @@ class Sphere :
 {
 public:
 	Sphere(void);
+	Sphere(int color);
 	~Sphere(void) override;
 
 private:

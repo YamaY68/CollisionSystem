@@ -5,8 +5,13 @@
 #include"../Manager/ResourceManager.h"
 #include".../../../Object/Actor/Camera/Camera.h"
 
+#include"../Manager/System/InputSystem/InputSystem.h"
+#include"../Manager/System/MoveSystem/MoveSystem.h"
 
 #include"../Object/Actor/ActorBase.h"
+
+#include"../Object/Actor/Component/MoveComponent/MoveComponent.h"
+#include"../Object/Actor/Component/PlayerInputComponent/PlayerInputComponent.h"
 
 #include"../Object/Actor/Shape/ShapeBase.h"
 #include"../Object/Actor/Shape/Sphere.h"
@@ -40,22 +45,31 @@ std::vector<std::shared_ptr<T>> ObjSearch(const std::vector<std::shared_ptr<Acto
 	return out;
 }
 void GameScene::Load(void)  
-{ 
-	// オブジェクト生成
-	actors_.push_back(std::make_shared<Sphere>());
-	std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
-	sphere->GetTransform().pos = VGet(200.0f, 0.0f, 0.0f);
-	actors_.push_back(sphere);
-	// カメラ生成
-	auto camera = std::make_shared<Camera>();
-	actors_.push_back(camera);
+{  
+	// オブジェクト生成  
+	std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();  
+	sphere->GetTransform().pos = VGet(-300.0f, 0.0f, 0.0f);  
+	sphere->AddComponent(std::make_shared<MoveComponent>(5));
+	sphere->AddComponent(std::make_shared<PlayerInputComponent>(
+		KEY_INPUT_W, KEY_INPUT_S,
+		KEY_INPUT_A, KEY_INPUT_D,
+		KEY_INPUT_Q, KEY_INPUT_E
+	));
+	actors_.push_back(sphere);  
 
+	sphere = std::make_shared<Sphere>(0xff00aa);
+	actors_.push_back(sphere);  
+
+	// カメラ生成  
+	auto camera = std::make_shared<Camera>();  
+	actors_.push_back(camera);  
 }
 void GameScene::Init(void)
 {
 	for (auto& actor : actors_)
 	{
 		actor->Init();
+		collisionSystem_.AddCollider(actor->GetOwnColliders());
 	}
 }
 
@@ -66,6 +80,10 @@ void GameScene::Update(void)
 	{
 		actor->Update();
 	}
+
+	inputSystem_.Update(actors_);
+	moveSystem_.Update(actors_);
+
 
 	collisionSystem_.Check();
 }

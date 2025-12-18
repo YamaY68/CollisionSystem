@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <memory>
-#include"../Object/Actor/System/CollisionSystem/CollisionSystem.h"
-
+#include"../Manager/CollisionSystem/CollisionSystem/CollisionSystem.h"
+#include"../Manager/System/InputSystem/InputSystem.h"
+#include"../Manager/System/MoveSystem/MoveSystem.h"
 
 class ActorBase;
 
@@ -34,7 +35,7 @@ private:
 	// è’ìÀîªíËÉVÉXÉeÉÄ
 	CollisionSystem collisionSystem_;
 
-private:
-	int ShadowMapHandle_ = -1;
+	MoveSystem moveSystem_;
+	InputSystem inputSystem_;
 };
 

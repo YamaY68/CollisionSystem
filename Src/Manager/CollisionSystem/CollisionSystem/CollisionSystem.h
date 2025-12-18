@@ -3,7 +3,8 @@
 #include<vector>
 #include<cstdint>
 #include<memory>
-#include"../../Collider/ColliderBase.h"
+#include<map>
+#include"../../../Object/Actor/Collider/ColliderBase.h"
 #include"CollisionLogic.h"
 
 class CollisionSystem
@@ -14,10 +15,10 @@ public:
 	//デストラクタ
 	~CollisionSystem(void);
 
-	//動的コライダ登録
-	void AddDynamicCollider(const std::shared_ptr<ColliderBase>& collider);
-	//静的コライダ登録
-	void AddStaticCollider(const std::shared_ptr<ColliderBase>& collider);
+	//コライダの登録
+	void AddCollider(const std::map<int, std::shared_ptr<ColliderBase>>& collider);
+
+
 
 	//登録コライダー削除
 	void Clear(void);
@@ -26,11 +27,14 @@ public:
 	void Check(void);
 
 private:
+	//動的コライダ登録
+	void AddDynamicCollider(const std::shared_ptr<ColliderBase>& collider);
+	//静的コライダ登録
+	void AddStaticCollider(const std::shared_ptr<ColliderBase>& collider);
+
 	// 衝突判定処理
 	void CollisionCheck(const std::shared_ptr<ColliderBase>& a,
 		const std::shared_ptr<ColliderBase>& b);
-	
-
 
 	//アクティブなコライダーを取得
 	void GetActiveColliders(void);

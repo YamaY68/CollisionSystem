@@ -4,6 +4,11 @@ ShapeBase::ShapeBase(void)
 {
 }
 
+ShapeBase::ShapeBase(int color)
+{
+	this->color = color;
+}
+
 ShapeBase::~ShapeBase(void)
 {
 }

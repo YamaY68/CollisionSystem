@@ -14,6 +14,13 @@ ColliderSphere::ColliderSphere(ColliderInfo& info, float radius)
 {
 }
 
+ColliderSphere::ColliderSphere(ColliderInfo& info, float radius, int color)
+	:
+	ColliderBase(info, color),
+	radius_(radius)
+{
+}
+
 ColliderSphere::~ColliderSphere(void)
 {
 }

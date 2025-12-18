@@ -11,6 +11,7 @@ ColliderBase::ColliderBase(void)
 	colliderInfo_.mask = 0;
 	colliderInfo_.localPos = VGet(0.0f, 0.0f, 0.0f);
 	colliderInfo_.localRot = VGet(0.0f, 0.0f, 0.0f);
+	colliderInfo_.isDynamic = true;
 	colliderInfo_.isTrigger = false;
 	colliderInfo_.isActive = false;
 	colliderInfo_.weight = 0.0f;
@@ -21,7 +22,14 @@ ColliderBase::ColliderBase(ColliderInfo& info)
 	:
 	colliderInfo_(info)
 {
+	debugColor_ = COLOR_INVALID;
+}
 
+ColliderBase::ColliderBase(ColliderInfo& info, int color)
+	:
+	colliderInfo_(info),
+	debugColor_(color)
+{
 }
 
 
@@ -37,12 +45,7 @@ void ColliderBase::Update(void)
 void ColliderBase::Draw(void)
 {
 	// デバッグ描画
-	int color = COLOR_INVALID;
-	if (colliderInfo_.isActive)
-	{
-		color = COLOR_VALID;
-	}
-	DrawDebug(color);
+	DrawDebug(debugColor_);
 }
 
 void ColliderBase::Release(void)

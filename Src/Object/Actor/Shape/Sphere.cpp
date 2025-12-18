@@ -1,6 +1,7 @@
 #include "Sphere.h"  
 #include<memory>
 #include "../Collider/ColliderSphere.h"  
+#include"../Collider/ColliderInfo.h"
 #include"../Collider/ColliderBase.h"
 
 Sphere::Sphere(void)  
@@ -8,7 +9,14 @@ Sphere::Sphere(void)
 	ShapeBase(),
 	radius_(100.0f)
 {  
-}  
+}
+
+Sphere::Sphere(int color)
+    :
+    ShapeBase(color),
+	radius_(100.0f)
+{
+}
 
 Sphere::~Sphere(void)  
 {  
@@ -36,7 +44,7 @@ void Sphere::SubRelease(void)
 
 void Sphere::InitCollider(void)  
 {  
-   ColliderBase::ColliderInfo info = {  
+   ColliderInfo info = {  
        SHAPE::SPHERE,  
        &trans_,  
        TAG::NONE,  
@@ -44,11 +52,12 @@ void Sphere::InitCollider(void)
        0,  
        VGet(0.0f, 0.0f, 0.0f),  
        VGet(0.0f, 0.0f, 0.0f),  
+       true,
        false,  
        true,  
        1.0f  
    };  
    std::shared_ptr<ColliderSphere> collider =
-	   std::make_shared<ColliderSphere>(info, radius_);
+	   std::make_shared<ColliderSphere>(info, radius_,color);
    ownColliders_.emplace(static_cast<int>(SHAPE::SPHERE), collider);
 }

@@ -9,6 +9,9 @@ public:
 	ColliderSphere(void);
 	//コンストラクタ
 	ColliderSphere(ColliderInfo& info, float radius);
+	//色変え用コンストラクタ
+	ColliderSphere(ColliderInfo& info, float radius, int color);
+
 	//デストラクタ
 	virtual ~ColliderSphere(void);
 
