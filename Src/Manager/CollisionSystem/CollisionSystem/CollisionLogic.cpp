@@ -6,6 +6,7 @@
 #include"../../../Object/Actor/Collider/ColliderBase.h"
 
 #include"../../../Object/Actor/Collider/ColliderSphere.h"
+#include"../../../Object/Actor/Collider/ColliderBox.h"
 
 CollisionLogic::CollisionLogic()  
 {  
@@ -100,7 +101,7 @@ CollisionLogic::SphereToSphere(
     float rB = sphereB->GetRadius();
 
 	// 2つの球の中心間のベクトル差
-    VECTOR diff = VSub(posB, posA);
+    VECTOR diff = VSub(posA, posB);
 
 	// 中心間の距離の2乗
     float distSq = diff.x * diff.x + diff.y * diff.y+diff.z*diff.z;
@@ -146,8 +147,8 @@ CollisionLogic::SphereToSphere(
     //正規化用比重
 	float totalWeight = weightA + weightB;
     result.penetration *= 0.8f;
-	result.pushA = result.penetration * (weightB / totalWeight);
-	result.pushB = result.penetration * (weightA / totalWeight);
+	result.pushA = result.penetration * (weightA / totalWeight);
+	result.pushB = result.penetration * (weightB / totalWeight);
 
 
     return result;
@@ -159,9 +160,103 @@ CollisionLogic::CollisionResult CollisionLogic::SphereToCapsule(const std::share
     return CollisionResult();
 }
 
-CollisionLogic::CollisionResult CollisionLogic::SphereToBox(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionLogic::CollisionResult
+CollisionLogic::SphereToBox(
+    const std::shared_ptr<ColliderBase>& a,
+    const std::shared_ptr<ColliderBase>& b)
 {
-    return CollisionResult();
+    CollisionResult result;
+
+    auto sphere = std::dynamic_pointer_cast<ColliderSphere>(a);
+    auto box = std::dynamic_pointer_cast<ColliderBox>(b);
+	// 型変換に失敗したら衝突判定を行わない
+    if (!sphere || !box) return result;
+
+	// 球の位置と半径
+    VECTOR spherePos = a->GetFollow()->pos;
+    float  radius = sphere->GetRadius();
+	// 箱の位置と半サイズ
+    VECTOR boxPos = b->GetFollow()->pos;
+    VECTOR half = box->GetHalfSize();
+
+	// ===== ローカル座標系変換 =====
+    VECTOR local = VSub(spherePos, boxPos);
+
+	// ===== 最近接点計算 =====
+    VECTOR closest = VGet(
+        std::clamp(local.x, -half.x, half.x),
+        std::clamp(local.y, -half.y, half.y),
+        std::clamp(local.z, -half.z, half.z)
+    );
+
+	// ===== 距離計算 =====
+    VECTOR diff = VSub(local, closest);
+    float distSq = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+
+	//衝突していなければ終了
+    if (distSq > radius * radius)
+        return result;
+
+    result.isHit = true;
+
+	//特殊ケース：箱の中に球の中心がある場合
+    if (distSq < 1e-6f)
+    {
+        float dx = half.x - fabsf(local.x);
+        float dy = half.y - fabsf(local.y);
+        float dz = half.z - fabsf(local.z);
+
+        if (dx < dy && dx < dz)
+        {
+            result.normal = (local.x > 0) ? VGet(1, 0, 0) : VGet(-1, 0, 0);
+            result.penetration = radius + dx;
+        }
+        else if (dy < dz)
+        {
+            result.normal = (local.y > 0) ? VGet(0, 1, 0) : VGet(0, -1, 0);
+            result.penetration = radius + dy;
+        }
+        else
+        {
+            result.normal = (local.z > 0) ? VGet(0, 0, 1) : VGet(0, 0, -1);
+            result.penetration = radius + dz;
+        }
+    }
+	// 通常ケース
+    else
+    {
+        float dist = sqrtf(distSq);
+        result.normal = VScale(diff, 1.0f / dist);
+        result.penetration = radius - dist;
+    }
+
+	// 押し出し計算
+    const ColliderInfo& infoA = a->GetColliderInfo();
+    const ColliderInfo& infoB = b->GetColliderInfo();
+	// トリガー判定
+    if (infoA.isTrigger || infoB.isTrigger)
+        return result;
+	// お互いが静的なら押し出し計算を行わない
+    if (!infoA.isDynamic && !infoB.isDynamic)
+        return result;
+	// どちらかが静的ならもう片方を全押し出し
+    float wA = infoA.isDynamic ? infoA.weight : 0.0f;
+    float wB = infoB.isDynamic ? infoB.weight : 0.0f;
+	// 正規化用比重
+    float total = wA + wB;
+	// 押し出し量計算
+    if (total <= 0.0f)
+    {
+        result.pushA = result.penetration;
+        result.pushB = 0.0f;
+    }
+    else
+    {
+        result.pushA = result.penetration * (wA / total);
+        result.pushB = result.penetration * (wB / total);
+    }
+
+    return result;
 }
 
 CollisionLogic::CollisionResult CollisionLogic::CapsuleToCapsule(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)

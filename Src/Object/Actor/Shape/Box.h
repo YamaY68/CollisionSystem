@@ -1,13 +1,14 @@
 #pragma once
+#include <DxLib.h>
 #include "ShapeBase.h"
-class Sphere :
+class Box :
     public ShapeBase
 {
 public:
-	Sphere(void);
-	Sphere(int color);
-	Sphere(float radius, int color);
-	~Sphere(void) override;
+	Box(void);
+	Box(int color);
+	Box(const VECTOR& halfSize, int color);
+	~Box(void) override;
 
 private:
 	void SubInit(void) override;
@@ -18,6 +19,6 @@ private:
 	void InitCollider(void)override;
 
 private:
-	float radius_ = 1.0f;
+	VECTOR halfSize_;
 };
 

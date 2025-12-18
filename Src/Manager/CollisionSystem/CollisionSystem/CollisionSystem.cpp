@@ -107,7 +107,7 @@ void CollisionSystem::CollisionCheck(const std::shared_ptr<ColliderBase>& a, con
 		VECTOR& posA = a->GetFollow()->pos;
 		//VECTOR normal = VScale(result.normal, -1.0f);
 		VECTOR push = VScale(result.normal, result.pushA);
-		posA = VSub(
+		posA = VAdd(
 			posA, push
 		);
 	}
@@ -115,7 +115,8 @@ void CollisionSystem::CollisionCheck(const std::shared_ptr<ColliderBase>& a, con
 	{
 		//ƒfƒoƒbƒO‚µ‚â‚·‚¢‚æ‚¤‚É•Ï”‚ÉŠi”[
 		VECTOR& posB = b->GetFollow()->pos;
-		VECTOR push = VScale(result.normal, result.pushB);
+		VECTOR push = VScale(
+			VScale(result.normal,-1), result.pushB);
 		posB = VAdd(
 			posB,push
 		);

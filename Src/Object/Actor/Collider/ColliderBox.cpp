@@ -14,9 +14,45 @@ ColliderBox::ColliderBox(ColliderInfo& info, const VECTOR& halfSize)
 {
 }
 
+ColliderBox::ColliderBox(ColliderInfo& info, const VECTOR& halfSize, int color)
+	:
+	ColliderBase(info, color),
+	halfSize_(halfSize)
+{
+}
+
 ColliderBox::~ColliderBox(void)
 {
 }
+
+VECTOR ColliderBox::Local2World(const VECTOR& localPos) const
+{
+	VECTOR center = GetRotPos(colliderInfo_.localPos);
+
+	return VAdd(
+		center,
+		VAdd(
+			VAdd(
+				VScale(GetAxisX(), localPos.x),
+				VScale(GetAxisY(), localPos.y)),
+			VScale(GetAxisZ(), localPos.z)
+		)
+	);
+}
+
+
+VECTOR ColliderBox::World2Local(const VECTOR& worldPos) const
+{
+	VECTOR center = GetRotPos(colliderInfo_.localPos);
+	VECTOR dir = VSub(worldPos, center);
+
+	return VGet(
+		VDot(dir, GetAxisX()),
+		VDot(dir, GetAxisY()),
+		VDot(dir, GetAxisZ())
+	);
+}
+
 
 VECTOR ColliderBox::GetVertexPos(int index) const
 {
@@ -55,9 +91,9 @@ void ColliderBox::DrawDebug(int color)
 	//中心座標
 	VECTOR center = GetRotPos(colliderInfo_.localPos);
 	//ワールド軸
-	VECTOR axisX = GetFollow()->quaRot.PosAxis(VGet(halfSize_.x, 0.0f, 0.0f));
-	VECTOR axisY = GetFollow()->quaRot.PosAxis(VGet(0.0f, halfSize_.y, 0.0f));
-	VECTOR axisZ = GetFollow()->quaRot.PosAxis(VGet(0.0f, 0.0f, halfSize_.z));
+	VECTOR axisX = GetFollow()->GetRight();
+	VECTOR axisY = GetFollow()->GetUp();
+	VECTOR axisZ = GetFollow()->GetForward();
 	//中心から頂点までのベクトル
 	VECTOR hx = VScale(axisX, halfSize_.x);
 	VECTOR hy = VScale(axisY, halfSize_.y);

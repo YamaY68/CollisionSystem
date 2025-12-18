@@ -15,6 +15,7 @@
 
 #include"../Object/Actor/Shape/ShapeBase.h"
 #include"../Object/Actor/Shape/Sphere.h"
+#include"../Object/Actor/Shape/Box.h"
 
 GameScene::GameScene(void):
 	SceneBase()
@@ -59,6 +60,16 @@ void GameScene::Load(void)
 
 	sphere = std::make_shared<Sphere>(0xff00aa);
 	actors_.push_back(sphere);  
+
+	std::shared_ptr<Box>box = std::make_shared<Box>();
+	box->GetTransform().pos = VGet(0.0f, 0.0f, 0.0f);
+	actors_.push_back(box);
+	box->AddComponent(std::make_shared<MoveComponent>(5));
+	box->AddComponent(std::make_shared<PlayerInputComponent>(
+		KEY_INPUT_I, KEY_INPUT_K,
+		KEY_INPUT_J, KEY_INPUT_L,
+		KEY_INPUT_U, KEY_INPUT_O
+	));
 
 	// ÉJÉÅÉâê∂ê¨  
 	auto camera = std::make_shared<Camera>();  
