@@ -58,11 +58,26 @@ void GameScene::Load(void)
 	));
 	actors_.push_back(sphere);  
 
-	sphere = std::make_shared<Sphere>(0xff00aa);
-	actors_.push_back(sphere);  
+	for (int i = 0; i < 3; i++)
+	{
+		for (int k = 0; k < 3; k++)
+		{
+			for (int j = 0; j <3; j++)
+			{
+
+
+			sphere = std::make_shared<Sphere>(10, 0xff00aa);
+			actors_.push_back(sphere);
+			sphere->GetTransform().pos = VGet(
+				i * 10, k * 10, j * 10
+			);
+			}
+		}
+	}
+
 
 	std::shared_ptr<Box>box = std::make_shared<Box>();
-	box->GetTransform().pos = VGet(0.0f, 0.0f, 0.0f);
+	box->GetTransform().pos = VGet(300.0f, 0.0f, 0.0f);
 	actors_.push_back(box);
 	box->AddComponent(std::make_shared<MoveComponent>(5));
 	box->AddComponent(std::make_shared<PlayerInputComponent>(
