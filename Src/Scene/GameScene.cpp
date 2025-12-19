@@ -86,6 +86,10 @@ void GameScene::Load(void)
 		KEY_INPUT_U, KEY_INPUT_O
 	));
 
+	box = std::make_shared<Box>();
+	box->GetTransform().pos = VGet(-300.0f, 0.0f, 0.0f);
+	actors_.push_back(box);
+
 	// ƒJƒƒ‰¶¬  
 	auto camera = std::make_shared<Camera>();  
 	actors_.push_back(camera);  

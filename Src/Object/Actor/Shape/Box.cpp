@@ -56,10 +56,10 @@ void Box::InitCollider(void)
     0,
     VGet(0.0f, 0.0f, 0.0f),
     VGet(0.0f, 0.0f, 0.0f),
-    false,
+    true,
     false,
     true,
-    1.0f
+    0.2f
     };
     std::shared_ptr<ColliderBox> collider =
 		std::make_shared<ColliderBox>(info, halfSize_, this->color);

@@ -269,7 +269,87 @@ CollisionLogic::CollisionResult CollisionLogic::CapsuleToBox(const std::shared_p
     return CollisionResult();
 }
 
-CollisionLogic::CollisionResult CollisionLogic::BoxToBox(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionLogic::CollisionResult
+CollisionLogic::BoxToBox(
+    const std::shared_ptr<ColliderBase>& a,
+    const std::shared_ptr<ColliderBase>& b)
 {
-    return CollisionResult();
+    CollisionResult result;
+
+    auto boxA = std::dynamic_pointer_cast<ColliderBox>(a);
+    auto boxB = std::dynamic_pointer_cast<ColliderBox>(b);
+	// 型変換に失敗したら衝突判定を行わない
+    if (!boxA || !boxB) return result;
+    
+	// 箱の位置と半サイズ
+    VECTOR posA = a->GetFollow()->pos;
+    VECTOR posB = b->GetFollow()->pos;
+    VECTOR halfA = boxA->GetHalfSize();
+    VECTOR halfB = boxB->GetHalfSize();
+
+    //軸平行判定
+    VECTOR diff = VSub(posB, posA);
+
+	// X軸方向の重なり判定
+    float overlapX = (halfA.x + halfB.x) - fabsf(diff.x);
+    if (overlapX <= 0.0f) return result;
+
+	// Y軸方向の重なり判定
+    float overlapY = (halfA.y + halfB.y) - fabsf(diff.y);
+    if (overlapY <= 0.0f) return result;
+
+	// Z軸方向の重なり判定
+    float overlapZ = (halfA.z + halfB.z) - fabsf(diff.z);
+    if (overlapZ <= 0.0f) return result;
+
+    result.isHit = true;
+
+	// 最小の重なり軸を見つける
+    if (overlapX < overlapY && overlapX < overlapZ)
+    {
+        result.normal = (diff.x > 0) ? VGet(-1, 0, 0) : VGet(1, 0, 0);
+        result.penetration = overlapX;
+    }
+    else if (overlapY < overlapZ)
+    {
+        result.normal = (diff.y > 0) ? VGet(0, -1, 0) : VGet(0, 1, 0);
+        result.penetration = overlapY;
+    }
+    else
+    {
+        result.normal = (diff.z > 0) ? VGet(0, 0, -1) : VGet(0, 0, 1);
+        result.penetration = overlapZ;
+    }
+
+    const ColliderInfo& infoA = a->GetColliderInfo();
+    const ColliderInfo& infoB = b->GetColliderInfo();
+
+	// トリガー判定
+    if (infoA.isTrigger || infoB.isTrigger)
+        return result;
+
+	// お互いが静的なら押し出し計算を行わない
+    if (!infoA.isDynamic && !infoB.isDynamic)
+        return result;
+
+	// どちらかが静的ならもう片方を全押し出し
+    float wA = infoA.isDynamic ? infoA.weight : 0.0f;
+    float wB = infoB.isDynamic ? infoB.weight : 0.0f;
+	// 正規化用比重
+    float total = wA + wB;
+
+	// 押し出し量計算
+    if (total <= 0.0f)
+    {
+        result.pushA = result.penetration;
+        result.pushB = 0.0f;
+    }
+    else
+    {
+        result.pushA = result.penetration * (wA / total);
+        result.pushB = result.penetration * (wB / total);
+    }
+
+    return result;
 }
+
