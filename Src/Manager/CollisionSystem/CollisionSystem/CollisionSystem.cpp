@@ -65,13 +65,14 @@ void CollisionSystem::Check()
 	// 衝突判定処理
     for (int loop = 0; loop < 1; ++loop)
     {
-        for (size_t i = 0; i < activeDynamicColliders_.size(); ++i)
+        for (size_t i = 0; i < activeDynamicColliders_.size(); i++)
         {
             //コライダーを取得
             auto&  ColliderA= activeDynamicColliders_[i];
 			// 動的 × 動的
-            for (size_t j = i + 1; j < activeDynamicColliders_.size(); ++j)
+            for (size_t j =0; j < activeDynamicColliders_.size(); j++)
             {
+				if (ColliderA == activeDynamicColliders_[j])continue;
                 CollisionCheck(ColliderA, activeDynamicColliders_[j]);
             }
             // 動的 × 静的

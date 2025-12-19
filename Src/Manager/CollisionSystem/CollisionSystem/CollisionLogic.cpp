@@ -343,7 +343,109 @@ CollisionLogic::CollisionResult CollisionLogic::CapsuleToCapsule(const std::shar
 
 CollisionLogic::CollisionResult CollisionLogic::CapsuleToBox(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
-    return CollisionResult();
+    CollisionResult result;
+
+    
+    auto capsule = std::dynamic_pointer_cast<ColliderCapsule>(a);
+    auto box = std::dynamic_pointer_cast<ColliderBox>(b);
+
+    if (!capsule || !box)return result;
+
+    //カプセルの２点を取得
+    VECTOR A = capsule->GetPosTop();
+    VECTOR B = capsule->GetPosDown();
+    //半径を取得
+    float capR = capsule->GetRadius();
+
+    //ボックスの中心座標を取得
+    VECTOR boxCenter = b->GetFollow()->pos;
+	VECTOR boxHalf = box->GetHalfSize();
+
+	//カプセルの線分ABの最も近い点を求める
+	VECTOR AB = VSub(B, A);
+	//カプセルの中心からボックスの中心へのベクトル
+	VECTOR AC = VSub(boxCenter, A);
+
+	//線分ABの長さの2乗
+	float abLenSq = VDot(AB, AB);
+	//最近接点係数t
+	float t = 0.0f;
+	if (abLenSq > 0.0001f)
+		t = VDot(AC, AB) / abLenSq;
+
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	//カプセルの最も近い点
+	VECTOR closest = VAdd(A, VScale(AB, t));
+	//ボックスのローカル座標系に変換
+	VECTOR local = VSub(closest, boxCenter);
+	//ボックスの最近接点を求める
+	VECTOR boxClosest = VGet(
+		std::clamp(local.x, -boxHalf.x, boxHalf.x),
+		std::clamp(local.y, -boxHalf.y, boxHalf.y),
+		std::clamp(local.z, -boxHalf.z, boxHalf.z)
+	);
+	//距離計算
+	VECTOR diff = VSub(local, boxClosest);
+	float distSq = VDot(diff, diff);
+	//衝突していなければ終了
+    if (distSq > capR * capR)return result;
+	result.isHit = true;
+	//特殊ケース：箱の中にカプセルの最近接点がある場合
+	if (distSq < 1e-6f)
+	{
+		float dx = boxHalf.x - fabsf(local.x);
+		float dy = boxHalf.y - fabsf(local.y);
+		float dz = boxHalf.z - fabsf(local.z);
+        if (dx < dy && dx < dz)
+        {
+            result.normal = (local.x > 0) ? VGet(1, 0, 0) : VGet(-1, 0, 0);
+            result.penetration = capR + dx;
+        }
+		else if (dy < dz)
+		{
+			result.normal = (local.y > 0) ? VGet(0, 1, 0) : VGet(0, -1, 0);
+			result.penetration = capR + dy;
+		}
+		else
+		{
+			result.normal = (local.z > 0) ? VGet(0, 0, 1) : VGet(0, 0, -1);
+			result.penetration = capR + dz;
+		}
+	}
+	//通常ケース
+	else
+	{
+		float dist = sqrtf(distSq);
+		result.normal = VScale(diff, 1.0f / dist);
+		result.penetration = capR - dist;
+	}
+	//押し出し計算
+	const ColliderInfo& infoA = a->GetColliderInfo();
+	const ColliderInfo& infoB = b->GetColliderInfo();
+	//トリガー判定
+	if (infoA.isTrigger || infoB.isTrigger)
+		return result;
+	//お互いが静的なら押し出し計算を行わない
+    if (!infoA.isDynamic && !infoB.isDynamic)
+        return result;
+	//どちらかが静的ならもう片方を全押し出し
+	float wA = infoA.isDynamic ? infoA.weight : 0.0f;
+	float wB = infoB.isDynamic ? infoB.weight : 0.0f;
+	//正規化用比重
+	float total = wA + wB;
+	//押し出し量計算
+	if (total <= 0.0f)
+	{
+		result.pushA = result.penetration;
+		result.pushB = 0.0f;
+	}
+	else
+	{
+		result.pushA = result.penetration * (wA / total);
+		result.pushB = result.penetration * (wB / total);
+	}
+        return result;
 }
 
 CollisionLogic::CollisionResult
