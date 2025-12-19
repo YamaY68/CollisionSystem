@@ -33,4 +33,15 @@ void ActorBase::Release(void)
 
 }
 
+void ActorBase::AddVelocity(const VECTOR& vel)
+{
+	VECTOR newVel = VAdd(vel_, vel);
+	float len = VSize(newVel);
+	if (len > maxVelocity_)
+	{
+		newVel = VScale(newVel, maxVelocity_ / len);
+	}
+	vel_ = newVel;
+}
+
 

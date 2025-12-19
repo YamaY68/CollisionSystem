@@ -336,9 +336,121 @@ CollisionLogic::SphereToBox(
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::CapsuleToCapsule(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionLogic::CollisionResult CollisionLogic::CapsuleToCapsule(
+    const std::shared_ptr<ColliderBase>& a,
+    const std::shared_ptr<ColliderBase>& b)
 {
-    return CollisionResult();
+    CollisionResult result;
+
+    // 型変換
+    auto capA = std::dynamic_pointer_cast<ColliderCapsule>(a);
+    auto capB = std::dynamic_pointer_cast<ColliderCapsule>(b);
+    if (!capA || !capB) return result;
+
+    // ===== カプセル情報 =====
+    VECTOR A = capA->GetPosTop();
+    VECTOR B = capA->GetPosDown();
+    VECTOR C = capB->GetPosTop();
+    VECTOR D = capB->GetPosDown();
+
+    float rA = capA->GetRadius();
+    float rB = capB->GetRadius();
+
+    // ===== 線分ベクトル =====
+    VECTOR u = VSub(B, A); // AB
+    VECTOR v = VSub(D, C); // CD
+    VECTOR w = VSub(A, C);
+
+    // ===== 内積 =====
+    float a_ = VDot(u, u); // |u|^2
+    float b_ = VDot(u, v);
+    float c_ = VDot(v, v); // |v|^2
+    float d_ = VDot(u, w);
+    float e_ = VDot(v, w);
+
+    // ===== 最近接点係数 =====
+    float s = 0.0f;
+    float t = 0.0f;
+    const float EPS = 1e-6f;
+
+    if (a_ <= EPS && c_ <= EPS)
+    {
+        // 両方とも点
+        s = t = 0.0f;
+    }
+    else if (a_ <= EPS)
+    {
+        // AB が点
+        s = 0.0f;
+        t = std::clamp(e_ / c_, 0.0f, 1.0f);
+    }
+    else if (c_ <= EPS)
+    {
+        // CD が点
+        t = 0.0f;
+        s = std::clamp(-d_ / a_, 0.0f, 1.0f);
+    }
+    else
+    {
+        float denom = a_ * c_ - b_ * b_;
+
+        if (denom != 0.0f)
+            s = std::clamp((b_ * e_ - c_ * d_) / denom, 0.0f, 1.0f);
+        else
+            s = 0.0f;
+
+        t = (b_ * s + e_) / c_;
+
+        if (t < 0.0f)
+        {
+            t = 0.0f;
+            s = std::clamp(-d_ / a_, 0.0f, 1.0f);
+        }
+        else if (t > 1.0f)
+        {
+            t = 1.0f;
+            s = std::clamp((b_ - d_) / a_, 0.0f, 1.0f);
+        }
+    }
+
+    // ===== 最近接点 =====
+    VECTOR PA = VAdd(A, VScale(u, s));
+    VECTOR PB = VAdd(C, VScale(v, t));
+
+    // ===== 衝突判定 =====
+    VECTOR diff = VSub(PA, PB);
+    float distSq = VDot(diff, diff);
+    float rSum = rA + rB;
+
+    if (distSq <= rSum * rSum)
+    {
+        result.isHit = true;
+
+        float dist = std::sqrt(distSq);
+        if (dist > 0.0001f)
+            result.normal = VScale(diff, 1.0f / dist);
+        else
+            result.normal = VGet(0.0f, 1.0f, 0.0f);
+
+        result.penetration = rSum - dist;
+		// ===== 押し出し分配 =====
+		const ColliderInfo& infoA = a->GetColliderInfo();
+		const ColliderInfo& infoB = b->GetColliderInfo();
+		if (infoA.isTrigger || infoB.isTrigger)
+			return result;
+		if (!infoA.isDynamic && !infoB.isDynamic)
+			return result;
+		float wA = infoA.isDynamic ? infoA.weight : 0.0f;
+		float wB = infoB.isDynamic ? infoB.weight : 0.0f;
+		float total = wA + wB;
+		if (total > 0.0f)
+		{
+			result.pushA = result.penetration * (wA / total);
+			result.pushB = result.penetration * (wB / total);
+		}
+    }
+
+    return result;
 }
 
 CollisionLogic::CollisionResult CollisionLogic::CapsuleToBox(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)

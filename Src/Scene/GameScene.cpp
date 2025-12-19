@@ -18,6 +18,8 @@
 #include"../Object/Actor/Shape/Box.h"
 #include"../Object/Actor/Shape/Capsule.h"
 
+#include"../Object/Actor/Floor/Floor.h"
+
 GameScene::GameScene(void):
 	SceneBase()
 {
@@ -100,6 +102,12 @@ void GameScene::Load(void)
 		KEY_INPUT_R, KEY_INPUT_Y
 	));
 	actors_.push_back(capsule);
+	capsule = std::make_shared<Capsule>(30, VGet(0, 100, 0), VGet(0, -100, 0), 0x00ffff);
+	actors_.push_back(capsule);
+
+	std::shared_ptr<Floor> floor = std::make_shared<Floor>(VGet(1000.0f, 500.0f, 1000.0f));
+	actors_.push_back(floor);
+
 
 	// ÉJÉÅÉâê∂ê¨  
 	auto camera = std::make_shared<Camera>();  

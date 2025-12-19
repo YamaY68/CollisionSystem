@@ -20,15 +20,20 @@ void MoveSystem::Update(const std::vector<std::shared_ptr<ActorBase>>& objects)
             dir = VScale(dir, 1.0f / len);
             move.SetDirection(dir);
 		}
-        //ブレイクポイント用
-		//移動ベクトルの長さが0なら移動しない
-		if (len == 0.0f)continue;
+
+        //重力
+		obj->AddVelocity(VGet(0.0f, -0.98f, 0.0f));
 
 		// 移動処理
         //デバッグしやすいようにスピードを取得
 		float speed = move.GetSpeed();
 
-        obj->GetTransform().pos = VAdd(obj->GetTransform().pos,
-            VScale(dir, speed));
+		obj->AddVelocity(VScale(dir, speed));
+
+		obj->GetTransform().pos = VAdd(
+			obj->GetTransform().pos,
+			obj->GetVelocity()
+		);
+
     }
 }

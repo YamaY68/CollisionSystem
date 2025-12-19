@@ -32,6 +32,13 @@ public:
 	int GetEntityId(void) const { return entityId_; }
 
 	VECTOR& GetVelocity(void) {return vel_; }
+	void SetVelocity(const VECTOR& vel) { vel_ = vel; }
+	//最大測度を超えないように加算
+	void AddVelocity(const VECTOR& vel);
+
+	//最大速度を設定取得
+	void SetMaxVelocity(float maxVel) { maxVelocity_ = maxVel; }
+	float GetMaxVelocity(void) const { return maxVelocity_; }
 
 	bool IsDynamic(void) {return isDynamic_; }
 
@@ -72,7 +79,7 @@ protected:
 	VECTOR dir_ = { 0,0,0 };
 	//移動測度
 	float speed_=0;
-
+	float maxVelocity_ = 10.0f;
 	//動的か静的か
 	bool isDynamic_=true;
 
