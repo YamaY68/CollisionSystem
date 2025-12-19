@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Actor\Shape\Capsule.cpp" />
     <ClCompile Include="Src\Object\Actor\Shape\Box.cpp" />
     <ClCompile Include="Src\Manager\System\InputSystem\InputSystem.cpp" />
     <ClCompile Include="Src\Object\Actor\Component\PlayerInputComponent\PlayerInputComponent.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Shape\Capsule.h" />
     <ClInclude Include="Src\Object\Actor\Shape\Box.h" />
     <ClInclude Include="Src\Manager\System\InputSystem\InputSystem.h" />
     <ClInclude Include="Src\Object\Actor\Collider\ColliderInfo.h" />

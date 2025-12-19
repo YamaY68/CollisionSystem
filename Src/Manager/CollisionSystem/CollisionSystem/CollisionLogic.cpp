@@ -7,6 +7,7 @@
 
 #include"../../../Object/Actor/Collider/ColliderSphere.h"
 #include"../../../Object/Actor/Collider/ColliderBox.h"
+#include"../../../Object/Actor/Collider/ColliderCapsule.h"
 
 CollisionLogic::CollisionLogic()  
 {  
@@ -155,10 +156,86 @@ CollisionLogic::SphereToSphere(
 }
 
 
-CollisionLogic::CollisionResult CollisionLogic::SphereToCapsule(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionLogic::CollisionResult
+CollisionLogic::SphereToCapsule(
+    const std::shared_ptr<ColliderBase>& a,
+    const std::shared_ptr<ColliderBase>& b)
 {
-    return CollisionResult();
+    CollisionResult result;
+
+    auto sphere = std::dynamic_pointer_cast<ColliderSphere>(a);
+    auto capsule = std::dynamic_pointer_cast<ColliderCapsule>(b);
+    if (!sphere || !capsule) return result;
+
+    // ===== 入力 =====
+    VECTOR spherePos = a->GetFollow()->pos;
+    float  sphereR = sphere->GetRadius();
+
+    VECTOR capA = capsule->GetPosTop();   // ワールド
+    VECTOR capB = capsule->GetPosDown();   // ワールド
+    float  capR = capsule->GetRadius();
+
+    // ===== 線分AB =====
+    VECTOR AB = VSub(capB, capA);
+    VECTOR AP = VSub(spherePos, capA);
+
+    float abLenSq = VDot(AB, AB);
+
+    // ===== 最近点係数 t =====
+    float t = 0.0f;
+    if (abLenSq > 0.0001f)
+        t = VDot(AP, AB) / abLenSq;
+
+    t = std::clamp(t, 0.0f, 1.0f);
+
+    // ===== 最近点 =====
+    VECTOR closest = VAdd(capA, VScale(AB, t));
+
+    // ===== 距離判定 =====
+    VECTOR diff = VSub(spherePos, closest);
+    float distSq = VDot(diff, diff);
+    float radiusSum = sphereR + capR;
+
+    if (distSq > radiusSum * radiusSum)
+        return result;
+
+    // ===== 衝突 =====
+    result.isHit = true;
+
+    float dist = sqrtf(distSq);
+
+    // ===== 法線 =====
+    if (dist > 0.0001f)
+        result.normal = VScale(diff, 1.0f / dist);
+    else
+        result.normal = VNorm(VSub(spherePos, capA));
+
+    // ===== 押し出し量 =====
+    result.penetration = radiusSum - dist;
+
+    // ===== 押し出し分配 =====
+    const ColliderInfo& infoA = a->GetColliderInfo();
+    const ColliderInfo& infoB = b->GetColliderInfo();
+
+    if (infoA.isTrigger || infoB.isTrigger)
+        return result;
+
+    if (!infoA.isDynamic && !infoB.isDynamic)
+        return result;
+
+    float wA = infoA.isDynamic ? infoA.weight : 0.0f;
+    float wB = infoB.isDynamic ? infoB.weight : 0.0f;
+    float total = wA + wB;
+
+    if (total > 0.0f)
+    {
+        result.pushA = result.penetration * (wB / total);
+        result.pushB = result.penetration * (wA / total);
+    }
+
+    return result;
 }
+
 
 CollisionLogic::CollisionResult
 CollisionLogic::SphereToBox(

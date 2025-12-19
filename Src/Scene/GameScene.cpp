@@ -16,6 +16,7 @@
 #include"../Object/Actor/Shape/ShapeBase.h"
 #include"../Object/Actor/Shape/Sphere.h"
 #include"../Object/Actor/Shape/Box.h"
+#include"../Object/Actor/Shape/Capsule.h"
 
 GameScene::GameScene(void):
 	SceneBase()
@@ -89,6 +90,16 @@ void GameScene::Load(void)
 	box = std::make_shared<Box>();
 	box->GetTransform().pos = VGet(-300.0f, 0.0f, 0.0f);
 	actors_.push_back(box);
+
+	std::shared_ptr<Capsule> capsule = std::make_shared<Capsule>(30,VGet(0,100,0),VGet(0,-100,0),0x00ffff);
+	capsule->GetTransform().pos = VGet(0.0f, 0.0f, 300.0f);
+	capsule->AddComponent(std::make_shared<MoveComponent>(5));
+	capsule->AddComponent(std::make_shared<PlayerInputComponent>(
+		KEY_INPUT_T, KEY_INPUT_G,
+		KEY_INPUT_F, KEY_INPUT_H,
+		KEY_INPUT_R, KEY_INPUT_Y
+	));
+	actors_.push_back(capsule);
 
 	// ÉJÉÅÉâê∂ê¨  
 	auto camera = std::make_shared<Camera>();  

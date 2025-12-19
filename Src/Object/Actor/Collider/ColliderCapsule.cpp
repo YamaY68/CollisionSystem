@@ -18,6 +18,15 @@ ColliderCapsule::ColliderCapsule(ColliderInfo& info, float radius, const VECTOR&
 {
 }
 
+ColliderCapsule::ColliderCapsule(ColliderInfo& info, float radius, const VECTOR& localPosTop, const VECTOR& localPosDown, int color)
+	:
+	ColliderBase(info, color),
+	radius_(radius),
+	localPosTop_(localPosTop),
+	localPosDown_(localPosDown)
+{
+}
+
 ColliderCapsule::~ColliderCapsule(void)
 {
 }

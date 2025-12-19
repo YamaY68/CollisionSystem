@@ -9,6 +9,11 @@ public:
 	//コンストラクタ
 	ColliderCapsule(ColliderInfo& info, float radius,
 		const VECTOR&localPosTop,const VECTOR&localPosDown);
+	//色変え用コンストラクタ
+	ColliderCapsule(ColliderInfo& info, float radius,
+		const VECTOR& localPosTop, const VECTOR& localPosDown,
+		int color);
+
 	//デストラクタ
 	virtual ~ColliderCapsule(void);
 	//親Transformからの相対位置を取得
