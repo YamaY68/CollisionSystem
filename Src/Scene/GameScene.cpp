@@ -80,7 +80,7 @@ void GameScene::Load(void)
 
 
 	std::shared_ptr<Box>box = std::make_shared<Box>();
-	box->GetTransform().pos = VGet(300.0f, 0.0f, 0.0f);
+	box->GetTransform().pos = VGet(300.0f,100.0f, 0.0f);
 	actors_.push_back(box);
 	box->AddComponent(std::make_shared<MoveComponent>(5));
 	box->AddComponent(std::make_shared<PlayerInputComponent>(
@@ -90,7 +90,7 @@ void GameScene::Load(void)
 	));
 
 	box = std::make_shared<Box>();
-	box->GetTransform().pos = VGet(-300.0f, 0.0f, 0.0f);
+	box->GetTransform().pos = VGet(-300.0f, 100.0f, 0.0f);
 	actors_.push_back(box);
 
 	std::shared_ptr<Capsule> capsule = std::make_shared<Capsule>(30,VGet(0,100,0),VGet(0,-100,0),0x00ffff);

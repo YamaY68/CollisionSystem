@@ -12,4 +12,9 @@ enum class CollisionPairType
 	CAPSULE_BOX,
 
 	BOX_BOX,
+
+	SPHERE_MODEL,
+	CAPSULE_MODEL,
+	BOX_MODEL,
+	MODEL_MODEL,
 };

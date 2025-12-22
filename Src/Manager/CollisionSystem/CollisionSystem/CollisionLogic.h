@@ -64,6 +64,30 @@ private:
 		const std::shared_ptr<ColliderBase>& b);
 
 
+	//球×モデル
+	static CollisionResult SphereToModel(
+		const std::shared_ptr<ColliderBase>& a,
+		const std::shared_ptr<ColliderBase>& b);
+
+
+	//カプセル×モデル
+	static CollisionResult CapsuleToModel(
+		const std::shared_ptr<ColliderBase>& a,
+		const std::shared_ptr<ColliderBase>& b);
+
+
+	//ボックス×モデル
+	static CollisionResult BoxToModel(
+		const std::shared_ptr<ColliderBase>& a,
+		const std::shared_ptr<ColliderBase>& b);
+
+
+	//モデル×モデル
+	static CollisionResult ModelToModel(
+		const std::shared_ptr<ColliderBase>& a,
+		const std::shared_ptr<ColliderBase>& b);
+
+
 private:
 
 };

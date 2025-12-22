@@ -45,6 +45,18 @@ CollisionPairType CollisionLogic::GetCollisionPairType(SHAPE shapeA, SHAPE shape
    if (shapeA == SHAPE::CAPSULE && shapeB == SHAPE::BOX)  
        return CollisionPairType::CAPSULE_BOX;  
 
+   if (shapeA == SHAPE::SPHERE && shapeB == SHAPE::MODEL)
+	   return CollisionPairType::SPHERE_MODEL;
+
+   if (shapeA == SHAPE::CAPSULE && shapeB == SHAPE::MODEL)
+	   return CollisionPairType::CAPSULE_MODEL;
+
+   if (shapeA == SHAPE::BOX && shapeB == SHAPE::MODEL)
+	   return CollisionPairType::BOX_MODEL;
+
+   if (shapeA == SHAPE::MODEL && shapeB == SHAPE::MODEL)
+	   return CollisionPairType::MODEL_MODEL;
+
    return CollisionPairType::NONE;  
 }  
 
@@ -56,26 +68,39 @@ CollisionLogic::CollisionResult CollisionLogic::DispatchCollision(CollisionPairT
     case CollisionPairType::NONE:
         break;
     case CollisionPairType::SPHERE_SPHERE:
-		result=SphereToSphere(a, b);
+        result = SphereToSphere(a, b);
         break;
     case CollisionPairType::SPHERE_CAPSULE:
-		result=SphereToCapsule(a, b);
+        result = SphereToCapsule(a, b);
         break;
     case CollisionPairType::SPHERE_BOX:
-		result=SphereToBox(a, b);
+        result = SphereToBox(a, b);
         break;
     case CollisionPairType::CAPSULE_CAPSULE:
-		result = CapsuleToCapsule(a, b);
+        result = CapsuleToCapsule(a, b);
         break;
     case CollisionPairType::CAPSULE_BOX:
-		result = CapsuleToBox(a, b);
+        result = CapsuleToBox(a, b);
         break;
     case CollisionPairType::BOX_BOX:
-		result = BoxToBox(a, b);
+        result = BoxToBox(a, b);
+        break;
+    case CollisionPairType::SPHERE_MODEL:
+		result = SphereToModel(a, b);
+        break;
+    case CollisionPairType::CAPSULE_MODEL:
+		result = CapsuleToModel(a, b);
+        break;
+    case CollisionPairType::BOX_MODEL:
+		result = BoxToModel(a, b);
+        break;
+    case CollisionPairType::MODEL_MODEL:
+		result = ModelToModel(a, b);
         break;
     default:
         break;
     }
+
 	return result;
 }
 
@@ -641,6 +666,30 @@ CollisionLogic::BoxToBox(
         result.pushB = result.penetration * (wB / total);
     }
 
+    return result;
+}
+
+CollisionLogic::CollisionResult CollisionLogic::SphereToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+{
+	CollisionResult result;
+    return result;
+}
+
+CollisionLogic::CollisionResult CollisionLogic::CapsuleToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+{
+    CollisionResult result;
+    return result;
+}
+
+CollisionLogic::CollisionResult CollisionLogic::BoxToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+{
+    CollisionResult result;
+    return result;
+}
+
+CollisionLogic::CollisionResult CollisionLogic::ModelToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+{
+    CollisionResult result;
     return result;
 }
 
