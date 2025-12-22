@@ -52,7 +52,7 @@ void Box::InitCollider(void)
     SHAPE::BOX,
     &trans_,
     TAG::NONE,
-    Layer::NONE,
+    Layer::ACTOR,
     0,
     VGet(0.0f, 0.0f, 0.0f),
     VGet(0.0f, 0.0f, 0.0f),

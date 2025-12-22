@@ -73,6 +73,7 @@ void CollisionSystem::Check()
             for (size_t j =0; j < activeDynamicColliders_.size(); j++)
             {
 				if (ColliderA == activeDynamicColliders_[j])continue;
+				ColliderA->GetColliderInfo().layer;
                 CollisionCheck(ColliderA, activeDynamicColliders_[j]);
             }
             // “®“I ~ Ã“I

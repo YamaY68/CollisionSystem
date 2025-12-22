@@ -39,6 +39,11 @@ public:
 	//親Transform取得
 	Transform* GetFollow(void) const { return colliderInfo_.targetTransform; }
 
+   // レイヤーマッチ判定
+   static bool IsLayerMatch(Layer layerA, uint32_t maskA)  
+   {  
+       return (maskA & LAYER_BIT(layerA)) != 0;  
+   }  
 protected:  
 	// ローカル座標から回転後のワールド座標を取得
    VECTOR GetRotPos(const VECTOR& localPos) const;  
@@ -51,11 +56,6 @@ protected:
        return 1 << static_cast<uint32_t>(layer);  
    }  
 
-   // レイヤーマッチ判定
-   static bool IsLayerMatch(Layer layerA, uint32_t maskA)  
-   {  
-       return (maskA & LAYER_BIT(layerA)) != 0;  
-   }  
 protected:  
 	// コライダ情報
 	ColliderInfo colliderInfo_;
