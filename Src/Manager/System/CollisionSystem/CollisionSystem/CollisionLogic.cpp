@@ -2,12 +2,12 @@
 #include <type_traits>  
 #include <algorithm>  
 
-#include"../../../Object/Actor/Collider/ColliderInfo.h"
-#include"../../../Object/Actor/Collider/ColliderBase.h"
-
-#include"../../../Object/Actor/Collider/ColliderSphere.h"
-#include"../../../Object/Actor/Collider/ColliderBox.h"
-#include"../../../Object/Actor/Collider/ColliderCapsule.h"
+#include"../../../../Object/Actor/Collider/ColliderInfo.h"
+#include"../../../../Object/Actor/Collider/ColliderBase.h"
+         
+#include"../../../../Object/Actor/Collider/ColliderSphere.h"
+#include"../../../../Object/Actor/Collider/ColliderBox.h"
+#include"../../../../Object/Actor/Collider/ColliderCapsule.h"
 
 CollisionLogic::CollisionLogic()  
 {  
@@ -60,7 +60,7 @@ CollisionPairType CollisionLogic::GetCollisionPairType(SHAPE shapeA, SHAPE shape
    return CollisionPairType::NONE;  
 }  
 
-CollisionLogic::CollisionResult CollisionLogic::DispatchCollision(CollisionPairType pairType, const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)  
+CollisionResult CollisionLogic::DispatchCollision(CollisionPairType pairType, const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)  
 {  
 	CollisionResult result;
     switch (pairType)
@@ -104,7 +104,7 @@ CollisionLogic::CollisionResult CollisionLogic::DispatchCollision(CollisionPairT
 	return result;
 }
 
-CollisionLogic::CollisionResult
+CollisionResult
 CollisionLogic::SphereToSphere(
     const std::shared_ptr<ColliderBase>& a,
     const std::shared_ptr<ColliderBase>& b)
@@ -181,7 +181,7 @@ CollisionLogic::SphereToSphere(
 }
 
 
-CollisionLogic::CollisionResult
+CollisionResult
 CollisionLogic::SphereToCapsule(
     const std::shared_ptr<ColliderBase>& a,
     const std::shared_ptr<ColliderBase>& b)
@@ -262,7 +262,7 @@ CollisionLogic::SphereToCapsule(
 }
 
 
-CollisionLogic::CollisionResult
+CollisionResult
 CollisionLogic::SphereToBox(
     const std::shared_ptr<ColliderBase>& a,
     const std::shared_ptr<ColliderBase>& b)
@@ -361,7 +361,7 @@ CollisionLogic::SphereToBox(
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::CapsuleToCapsule(
+CollisionResult CollisionLogic::CapsuleToCapsule(
     const std::shared_ptr<ColliderBase>& a,
     const std::shared_ptr<ColliderBase>& b)
 {
@@ -478,7 +478,7 @@ CollisionLogic::CollisionResult CollisionLogic::CapsuleToCapsule(
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::CapsuleToBox(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionResult CollisionLogic::CapsuleToBox(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
     CollisionResult result;
 
@@ -585,7 +585,7 @@ CollisionLogic::CollisionResult CollisionLogic::CapsuleToBox(const std::shared_p
         return result;
 }
 
-CollisionLogic::CollisionResult
+CollisionResult
 CollisionLogic::BoxToBox(
     const std::shared_ptr<ColliderBase>& a,
     const std::shared_ptr<ColliderBase>& b)
@@ -669,25 +669,25 @@ CollisionLogic::BoxToBox(
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::SphereToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionResult CollisionLogic::SphereToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
 	CollisionResult result;
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::CapsuleToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionResult CollisionLogic::CapsuleToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
     CollisionResult result;
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::BoxToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionResult CollisionLogic::BoxToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
     CollisionResult result;
     return result;
 }
 
-CollisionLogic::CollisionResult CollisionLogic::ModelToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
+CollisionResult CollisionLogic::ModelToModel(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
     CollisionResult result;
     return result;

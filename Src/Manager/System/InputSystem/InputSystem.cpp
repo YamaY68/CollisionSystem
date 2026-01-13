@@ -14,6 +14,7 @@ void InputSystem::Update(const std::vector<std::shared_ptr<ActorBase>>& objects)
 		auto& move = obj->GetComponent<MoveComponent>();
 		
 		VECTOR moveDir = VGet(0, 0, 0);
+
 		// “ü—Í‚É‰‚¶‚ÄˆÚ“®•ûŒü‚ğİ’è
 		if (CheckHitKey(input.keyFront)) moveDir.z += 1.0f;
 		if (CheckHitKey(input.keyBack)) moveDir.z -= 1.0f;

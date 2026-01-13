@@ -3,15 +3,14 @@
 
 #include"../Manager/SceneManager.h"
 #include"../Manager/ResourceManager.h"
-#include".../../../Object/Actor/Camera/Camera.h"
 
 #include"../Manager/System/InputSystem/InputSystem.h"
 #include"../Manager/System/MoveSystem/MoveSystem.h"
+#include"../Manager/System/CollisionSystem/CollisionSystem/CollisionResult.h"
 
 #include"../Object/Actor/ActorBase.h"
 
-#include"../Object/Actor/Component/MoveComponent/MoveComponent.h"
-#include"../Object/Actor/Component/PlayerInputComponent/PlayerInputComponent.h"
+#include".../../../Object/Actor/Camera/Camera.h"
 
 #include"../Object/Actor/Shape/ShapeBase.h"
 #include"../Object/Actor/Shape/Sphere.h"
@@ -19,6 +18,9 @@
 #include"../Object/Actor/Shape/Capsule.h"
 
 #include"../Object/Actor/Floor/Floor.h"
+
+#include"../Object/Actor/Component/MoveComponent/MoveComponent.h"
+#include"../Object/Actor/Component/PlayerInputComponent/PlayerInputComponent.h"
 
 GameScene::GameScene(void):
 	SceneBase()
@@ -52,16 +54,11 @@ void GameScene::Load(void)
 {  
 	// オブジェクト生成  
 	std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();  
-	sphere->GetTransform().pos = VGet(-300.0f, 100.0f, 0.0f);  
-	sphere->AddComponent(std::make_shared<MoveComponent>(5));
-	sphere->AddComponent(std::make_shared<PlayerInputComponent>(
-		KEY_INPUT_W, KEY_INPUT_S,
-		KEY_INPUT_A, KEY_INPUT_D,
-		KEY_INPUT_Q, KEY_INPUT_E
-	));
+	sphere->GetTransform().pos = VGet(-300.0f, 200.0f, 0.0f);  
+
 	actors_.push_back(sphere);  
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		for (int k = 0; k < 3; k++)
 		{
@@ -69,10 +66,10 @@ void GameScene::Load(void)
 			{
 
 
-			sphere = std::make_shared<Sphere>(10, 0xff00aa);
+			sphere = std::make_shared<Sphere>(5, 0xff00aa);
 			actors_.push_back(sphere);
 			sphere->GetTransform().pos = VGet(
-				i * 10, k * 10, j * 10
+				i * 10, 100+k * 10, j * 10
 			);
 			}
 		}
@@ -92,6 +89,12 @@ void GameScene::Load(void)
 	box = std::make_shared<Box>();
 	box->GetTransform().pos = VGet(-300.0f, 100.0f, 0.0f);
 	actors_.push_back(box);
+	box->AddComponent(std::make_shared<MoveComponent>(5));
+	box->AddComponent(std::make_shared<PlayerInputComponent>(
+		KEY_INPUT_W, KEY_INPUT_S,
+		KEY_INPUT_A, KEY_INPUT_D,
+		KEY_INPUT_Q, KEY_INPUT_E
+	));
 
 	std::shared_ptr<Capsule> capsule = std::make_shared<Capsule>(30,VGet(0,100,0),VGet(0,-100,0),0x00ffff);
 	capsule->GetTransform().pos = VGet(0.0f, 0.0f, 300.0f);
@@ -120,12 +123,30 @@ void GameScene::Load(void)
 	auto camera = std::make_shared<Camera>();  
 	actors_.push_back(camera);  
 }
+
 void GameScene::Init(void)
 {
+	// ラムダ式を std::function に変換
+	auto onBeginContact = [this](uint32_t a, uint32_t b) {
+		contactSystem_.OnBeginContact(a, b, CollisionResult{});
+		};
+
+	auto onEndContact = [this](uint32_t a, uint32_t b) {
+		contactSystem_.OnEndContact(a, b, CollisionResult{});
+		};
+
+	// std::function を関数ポインタに変換
+	collisionSystem_.SetContactCallbacks(
+		static_cast<ContactCallback>(onBeginContact),
+		static_cast<ContactCallback>(onEndContact)
+	);
+
 	for (auto& actor : actors_)
 	{
 		actor->Init();
+		actor->SetEntityId(EntityId);
 		collisionSystem_.AddCollider(actor->GetOwnColliders());
+		EntityId++;
 	}
 }
 

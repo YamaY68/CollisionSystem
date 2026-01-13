@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\System\ContactSystem\ContactSystem.cpp" />
     <ClCompile Include="Src\Object\Actor\Floor\Floor.cpp" />
     <ClCompile Include="Src\Object\Actor\Shape\Capsule.cpp" />
     <ClCompile Include="Src\Object\Actor\Shape\Box.cpp" />
@@ -152,8 +153,8 @@
     <ClCompile Include="Src\Manager\System\MoveSystem\MoveSystem.cpp" />
     <ClCompile Include="Src\Object\Actor\Shape\Sphere.cpp" />
     <ClCompile Include="Src\Object\Actor\Shape\ShapeBase.cpp" />
-    <ClCompile Include="Src\Manager\CollisionSystem\CollisionSystem\CollisionLogic.cpp" />
-    <ClCompile Include="Src\Manager\CollisionSystem\CollisionSystem\CollisionSystem.cpp" />
+    <ClCompile Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionLogic.cpp" />
+    <ClCompile Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionSystem.cpp" />
     <ClCompile Include="Src\Object\Actor\Collider\ColliderBox.cpp" />
     <ClCompile Include="Src\Object\Actor\Collider\ColliderCapsule.cpp" />
     <ClCompile Include="Src\Object\Actor\Collider\ColliderSphere.cpp" />
@@ -185,6 +186,8 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionResult.h" />
+    <ClInclude Include="Src\Manager\System\ContactSystem\ContactSystem.h" />
     <ClInclude Include="Src\Object\Actor\Floor\Floor.h" />
     <ClInclude Include="Src\Object\Actor\Shape\Capsule.h" />
     <ClInclude Include="Src\Object\Actor\Shape\Box.h" />
@@ -195,9 +198,9 @@
     <ClInclude Include="Src\Manager\System\MoveSystem\MoveSystem.h" />
     <ClInclude Include="Src\Object\Actor\Shape\Sphere.h" />
     <ClInclude Include="Src\Object\Actor\Shape\ShapeBase.h" />
-    <ClInclude Include="Src\Manager\CollisionSystem\CollisionSystem\CollisionLogic.h" />
-    <ClInclude Include="Src\Manager\CollisionSystem\CollisionSystem\CollisionPairType.h" />
-    <ClInclude Include="Src\Manager\CollisionSystem\CollisionSystem\CollisionSystem.h" />
+    <ClInclude Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionLogic.h" />
+    <ClInclude Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionPairType.h" />
+    <ClInclude Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionSystem.h" />
     <ClInclude Include="Src\Object\Actor\Collider\ColliderBox.h" />
     <ClInclude Include="Src\Object\Actor\Collider\ColliderCapsule.h" />
     <ClInclude Include="Src\Object\Actor\Collider\ColliderSphere.h" />

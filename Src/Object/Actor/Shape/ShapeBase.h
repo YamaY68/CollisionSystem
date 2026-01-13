@@ -14,6 +14,8 @@ protected:
 	void SubUpdate(void) override;
 	void SubDraw(void) override;
 	void SubRelease(void) override;
+	
+	void OnSupported(void) override;
 
 protected:
 	// Œ`ó‚ÌF

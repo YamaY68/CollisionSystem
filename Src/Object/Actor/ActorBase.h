@@ -28,17 +28,21 @@ public:
 
 	Transform& GetTransform(void) { return trans_; }
 
+	//エンティティID設定取得
 	void SetEntityId(int id) { entityId_ = id; }
 	int GetEntityId(void) const { return entityId_; }
 
 	VECTOR& GetVelocity(void) {return vel_; }
 	void SetVelocity(const VECTOR& vel) { vel_ = vel; }
+
 	//最大測度を超えないように加算
 	void AddVelocity(const VECTOR& vel);
 
 	//最大速度を設定取得
 	void SetMaxVelocity(float maxVel) { maxVelocity_ = maxVel; }
 	float GetMaxVelocity(void) const { return maxVelocity_; }
+
+	virtual void OnSupported(void) {};
 
 	bool IsDynamic(void) {return isDynamic_; }
 
@@ -64,7 +68,7 @@ protected:
 
 	virtual void InitCollider(void) {};
 
-
+	void SetOwnerActor(void);
 
 protected:
 	AnimationController* animationController_ = nullptr;

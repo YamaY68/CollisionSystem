@@ -6,6 +6,7 @@
 
 
 class Transform;  
+class ActorBase;
 class ColliderBase  
 {  
 public:
@@ -38,6 +39,10 @@ public:
 
 	//親Transform取得
 	Transform* GetFollow(void) const { return colliderInfo_.targetTransform; }
+	//親Actor取得
+	ActorBase* GetFollowActor(void) const { return actor_; }
+	//親Actor設定
+	void SetFollowActor(ActorBase* actor) { actor_ = actor; }
 
    // レイヤーマッチ判定
    static bool IsLayerMatch(Layer layerA, uint32_t maskA)  
@@ -60,6 +65,7 @@ protected:
 	// コライダ情報
 	ColliderInfo colliderInfo_;
 	int debugColor_;
+
 private:  
 	// マスク作成
    static uint32_t MakeMask(std::initializer_list<Layer> layers)  
@@ -73,4 +79,6 @@ private:
 	// デバッグ表示の色
 	static constexpr int COLOR_VALID = 0xff0000;
 	static constexpr int COLOR_INVALID = 0xaaaaaa;
+
+	ActorBase* actor_ = nullptr;
 };

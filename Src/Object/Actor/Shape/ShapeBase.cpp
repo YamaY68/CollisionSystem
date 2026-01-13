@@ -28,3 +28,8 @@ void ShapeBase::SubDraw(void)
 void ShapeBase::SubRelease(void)
 {
 }
+
+void ShapeBase::OnSupported(void)
+{
+	vel_.y = 0;
+}
