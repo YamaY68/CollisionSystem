@@ -7,6 +7,7 @@
 #include"../Manager/System/ContactSystem/ContactSystem.h"
 #include"../Manager/System/InputSystem/InputSystem.h"
 #include"../Manager/System/MoveSystem/MoveSystem.h"
+#include"../Manager/System/ContactSystem/GameContactSystem.h"
 
 class ActorBase;
 
@@ -36,10 +37,12 @@ private:
 	// è’ìÀîªíËÉVÉXÉeÉÄ
 	CollisionSystem collisionSystem_;
 	ContactSystem contactSystem_;
-
+	GameContactSystem gameContactSystem_;
 
 	MoveSystem moveSystem_;
 	InputSystem inputSystem_;
+
+
 
 	int EntityId = 0;
 };

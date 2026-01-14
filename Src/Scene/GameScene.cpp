@@ -53,31 +53,8 @@ std::vector<std::shared_ptr<T>> ObjSearch(const std::vector<std::shared_ptr<Acto
 void GameScene::Load(void)  
 {  
 	// オブジェクト生成  
-	std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();  
-	sphere->GetTransform().pos = VGet(-300.0f, 200.0f, 0.0f);  
-
-	actors_.push_back(sphere);  
-
-	for (int i = 0; i < 10; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
-			for (int j = 0; j <3; j++)
-			{
-
-
-			sphere = std::make_shared<Sphere>(5, 0xff00aa);
-			actors_.push_back(sphere);
-			sphere->GetTransform().pos = VGet(
-				i * 10, 100+k * 10, j * 10
-			);
-			}
-		}
-	}
-
-
 	std::shared_ptr<Box>box = std::make_shared<Box>();
-	box->GetTransform().pos = VGet(300.0f,100.0f, 0.0f);
+	box->GetTransform().pos = VGet(300.0f,200.0f, 0.0f);
 	actors_.push_back(box);
 	box->AddComponent(std::make_shared<MoveComponent>(5));
 	box->AddComponent(std::make_shared<PlayerInputComponent>(
@@ -87,7 +64,7 @@ void GameScene::Load(void)
 	));
 
 	box = std::make_shared<Box>();
-	box->GetTransform().pos = VGet(-300.0f, 100.0f, 0.0f);
+	box->GetTransform().pos = VGet(-300.0f, 200.0f, 0.0f);
 	actors_.push_back(box);
 	box->AddComponent(std::make_shared<MoveComponent>(5));
 	box->AddComponent(std::make_shared<PlayerInputComponent>(
@@ -96,28 +73,9 @@ void GameScene::Load(void)
 		KEY_INPUT_Q, KEY_INPUT_E
 	));
 
-	std::shared_ptr<Capsule> capsule = std::make_shared<Capsule>(30,VGet(0,100,0),VGet(0,-100,0),0x00ffff);
-	capsule->GetTransform().pos = VGet(0.0f, 0.0f, 300.0f);
-	capsule->AddComponent(std::make_shared<MoveComponent>(5));
-	capsule->AddComponent(std::make_shared<PlayerInputComponent>(
-		KEY_INPUT_T, KEY_INPUT_G,
-		KEY_INPUT_F, KEY_INPUT_H,
-		KEY_INPUT_R, KEY_INPUT_Y
-	));
-
-	actors_.push_back(capsule);
-	capsule = std::make_shared<Capsule>(30, VGet(0, 100, 0), VGet(0, -100, 0), 0x00ffff);
-	actors_.push_back(capsule);
-
 	std::shared_ptr<Floor> floor = std::make_shared<Floor>(VGet(1000.0f, 5.0f, 1000.0f));
 	floor->GetTransform().pos = VGet(0, -100, 0);
 	actors_.push_back(floor);
-	//floor->AddComponent(std::make_shared<MoveComponent>(5));
-	//floor->AddComponent(std::make_shared<PlayerInputComponent>(
-	//	KEY_INPUT_T, KEY_INPUT_G,
-	//	KEY_INPUT_F, KEY_INPUT_H,
-	//	KEY_INPUT_R, KEY_INPUT_Y
-	//));
 
 	// カメラ生成  
 	auto camera = std::make_shared<Camera>();  
@@ -163,6 +121,7 @@ void GameScene::Update(void)
 
 
 	collisionSystem_.Check();
+	gameContactSystem_.Update();
 }
 
 void GameScene::Draw(void)

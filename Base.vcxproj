@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\System\ContactSystem\ContactRuleTable.cpp" />
+    <ClCompile Include="Src\Manager\System\ContactSystem\GameContactSystem.cpp" />
     <ClCompile Include="Src\Manager\System\ContactSystem\ContactSystem.cpp" />
     <ClCompile Include="Src\Object\Actor\Floor\Floor.cpp" />
     <ClCompile Include="Src\Object\Actor\Shape\Capsule.cpp" />
@@ -186,8 +188,13 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\System\ContactSystem\ContactEventInfo.h" />
+    <ClInclude Include="Src\Manager\System\ContactSystem\ContactRuleTable.h" />
+    <ClInclude Include="Src\Manager\System\ContactSystem\GameContactSystem.h" />
     <ClInclude Include="Src\Manager\System\CollisionSystem\CollisionSystem\CollisionResult.h" />
     <ClInclude Include="Src\Manager\System\ContactSystem\ContactSystem.h" />
+    <ClInclude Include="Src\Manager\System\ContactSystem\GameEventType.h" />
+    <ClInclude Include="Src\Object\Actor\EntityKind.h" />
     <ClInclude Include="Src\Object\Actor\Floor\Floor.h" />
     <ClInclude Include="Src\Object\Actor\Shape\Capsule.h" />
     <ClInclude Include="Src\Object\Actor\Shape\Box.h" />

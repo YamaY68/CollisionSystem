@@ -5,8 +5,7 @@
 #include<vector>
 
 #include"../CollisionSystem/CollisionSystem/CollisionResult.h"
-
-using EntityID = std::uint32_t;
+#include"ContactEventInfo.h"
 
 class ContactSystem
 {
@@ -15,27 +14,21 @@ public:
 	void OnBeginContact(EntityID a, EntityID b,CollisionResult result);
 	void OnEndContact(EntityID a, EntityID b, CollisionResult result);
 
-	struct BeginEvent
+	std::vector<ContactRule> GetContactEvent() const
 	{
-		EntityID a;
-		EntityID b;
-	};
+		return contactRules_;
+	}
 
-	struct EndEvent
+	void Clear()
 	{
-		EntityID a;
-		EntityID b;
-	};
+		contactRules_.clear();
+	}
 
 private:
 
 	//‚±‚ÌID‚ª‚Ç‚ÌID‚½‚¿‚Æ“–‚½‚Á‚Ä‚¢‚é‚©‚ğŠi”[
 	std::map<EntityID, std::set<EntityID>> touching_;
 
-	//¡ƒtƒŒ[ƒ€‚Ån‚Ü‚Á‚½ÚG‚ğ‹L˜^
-	std::vector<BeginEvent> beginEvents_;
-
-	//¡ƒtƒŒ[ƒ€‚ÅI‚í‚Á‚½ÚG‚ğ‹L˜^
-	std::vector<EndEvent> endEvents_;
+	std::vector<ContactRule>contactRules_;
 };
 
