@@ -7,6 +7,7 @@
 #include"../Manager/System/InputSystem/InputSystem.h"
 #include"../Manager/System/MoveSystem/MoveSystem.h"
 #include"../Manager/System/CollisionSystem/CollisionSystem/CollisionResult.h"
+#include"../Manager/System/PhysicsSystem/PhysicsSystem.h"
 
 #include"../Object/Actor/ActorBase.h"
 
@@ -21,6 +22,7 @@
 
 #include"../Object/Actor/Component/MoveComponent/MoveComponent.h"
 #include"../Object/Actor/Component/PlayerInputComponent/PlayerInputComponent.h"
+#include"../Object/Actor/Component/RigidBodyComponent/RigidBody.h"
 
 GameScene::GameScene(void):
 	SceneBase()
@@ -56,25 +58,40 @@ void GameScene::Load(void)
 	std::shared_ptr<Box>box = std::make_shared<Box>();
 	box->GetTransform().pos = VGet(300.0f,200.0f, 0.0f);
 	actors_.push_back(box);
-	box->AddComponent(std::make_shared<MoveComponent>(5));
-	box->AddComponent(std::make_shared<PlayerInputComponent>(
-		KEY_INPUT_I, KEY_INPUT_K,
-		KEY_INPUT_J, KEY_INPUT_L,
-		KEY_INPUT_U, KEY_INPUT_O
-	));
+	box->AddComponent(std::make_shared<MoveComponent>(500)).
+		AddComponent(std::make_shared<PlayerInputComponent>(
+			KEY_INPUT_I, KEY_INPUT_K,
+			KEY_INPUT_J, KEY_INPUT_L,
+			KEY_INPUT_U, KEY_INPUT_O
+		));
+	auto rb = std::make_shared<RigidBody>();
+	rb->SetBodyType(RigidBody::BodyType::Dynamic);
+	rb->SetMass(1.0f);
+	rb->SetUseGravity(true);
+	box->AddComponent(rb);
 
 	box = std::make_shared<Box>();
 	box->GetTransform().pos = VGet(-300.0f, 200.0f, 0.0f);
 	actors_.push_back(box);
-	box->AddComponent(std::make_shared<MoveComponent>(5));
-	box->AddComponent(std::make_shared<PlayerInputComponent>(
-		KEY_INPUT_W, KEY_INPUT_S,
-		KEY_INPUT_A, KEY_INPUT_D,
-		KEY_INPUT_Q, KEY_INPUT_E
-	));
+	box->AddComponent(std::make_shared<MoveComponent>(500)).
+		AddComponent(std::make_shared<PlayerInputComponent>(
+			KEY_INPUT_W, KEY_INPUT_S,
+			KEY_INPUT_A, KEY_INPUT_D,
+			KEY_INPUT_Q, KEY_INPUT_E
+		));
+	rb = std::make_shared<RigidBody>();
+	rb->SetBodyType(RigidBody::BodyType::Dynamic);
+	rb->SetMass(1.0f);
+	rb->SetUseGravity(true);
+	box->AddComponent(rb);
 
 	std::shared_ptr<Floor> floor = std::make_shared<Floor>(VGet(1000.0f, 5.0f, 1000.0f));
 	floor->GetTransform().pos = VGet(0, -100, 0);
+	rb = std::make_shared<RigidBody>();
+	rb->SetBodyType(RigidBody::BodyType::Static);
+	rb->SetMass(0.0f);
+	floor->AddComponent(rb);
+
 	actors_.push_back(floor);
 
 	// ÉJÉÅÉâê∂ê¨  
@@ -118,10 +135,13 @@ void GameScene::Update(void)
 
 	inputSystem_.Update(actors_);
 	moveSystem_.Update(actors_);
+	physicsSystem_.Update(actors_);
 
 
 	collisionSystem_.Check();
 	gameContactSystem_.Update();
+
+	physicsSystem_.Resolve(actors_);
 }
 
 void GameScene::Draw(void)

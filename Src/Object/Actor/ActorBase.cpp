@@ -35,24 +35,6 @@ void ActorBase::Release(void)
 
 }
 
-void ActorBase::AddVelocity(const VECTOR& vel)
-{
-	VECTOR newVel = VAdd(vel_, vel);
-	float yVel = newVel.y;
-	newVel.y = 0.0f;
-	float len = VSize(newVel);
-	if (len > maxVelocity_)
-	{
-		newVel = VScale(newVel, maxVelocity_ / len);
-	}
-	if (yVel > maxVelocity_)
-	{
-		yVel = maxVelocity_;
-	}
-	newVel.y = yVel;
-	vel_ = newVel;
-}
-
 void ActorBase::SetOwnerActor(void)
 {
 	for (auto collider : ownColliders_)

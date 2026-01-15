@@ -32,26 +32,14 @@ public:
 	void SetEntityId(int id) { entityId_ = id; }
 	int GetEntityId(void) const { return entityId_; }
 
-	VECTOR& GetVelocity(void) {return vel_; }
-	void SetVelocity(const VECTOR& vel) { vel_ = vel; }
-
-	//最大測度を超えないように加算
-	void AddVelocity(const VECTOR& vel);
-
-	//最大速度を設定取得
-	void SetMaxVelocity(float maxVel) { maxVelocity_ = maxVel; }
-	float GetMaxVelocity(void) const { return maxVelocity_; }
-
 	virtual void OnSupported(void) {};
-
-	bool IsDynamic(void) {return isDynamic_; }
 
 	//自身のコライダーリスト取得
 	const std::map<int, std::shared_ptr<ColliderBase>>& GetOwnColliders(void) const { return ownColliders_; }
 
 	//コンポーネント追加
 	template<class T>
-	void AddComponent(std::shared_ptr<T>component);
+	ActorBase&AddComponent(std::shared_ptr<T>component);
 	//コンポーネントがあるか
 	template<class T>
 	bool HasComponent(void);
@@ -75,17 +63,6 @@ protected:
 	Transform trans_;
 	
 	int entityId_ = -1;
-	// 移動前の座標
-	VECTOR prevPos_ = { 0,0,0 };
-	//移動量
-	VECTOR vel_ = { 0,0,0 };
-	//向き
-	VECTOR dir_ = { 0,0,0 };
-	//移動測度
-	float speed_=0;
-	float maxVelocity_ = 10.0f;
-	//動的か静的か
-	bool isDynamic_=true;
 
 	//自身のコライダーリスト
 	std::map<int, std::shared_ptr<ColliderBase>> ownColliders_;
@@ -94,9 +71,10 @@ protected:
 };
 
 template<class T>
-inline void ActorBase::AddComponent(std::shared_ptr<T> component)
+inline ActorBase&ActorBase::AddComponent(std::shared_ptr<T> component)
 {
 	components_[std::type_index(typeid(T))] = component;
+	return *this;
 }
 
 template<class T>

@@ -1,5 +1,6 @@
 #include "CollisionSystem.h"
 #include"../../../../Object/Actor/ActorBase.h"
+#include"../../../../Object/Actor/Component/RigidBodyComponent/RigidBody.h"
 
 CollisionSystem::CollisionSystem(void)
 {
@@ -164,6 +165,9 @@ void CollisionSystem::Check()
 
 void CollisionSystem::CollisionCheck(const std::shared_ptr<ColliderBase>& a, const std::shared_ptr<ColliderBase>& b)
 {
+	a->GetFollowActor()->GetComponent<RigidBody>().Setgrounded(false);
+	b->GetFollowActor()->GetComponent<RigidBody>().Setgrounded(false);
+
 	//今フレームで衝突しているペアを集める
 	std::vector < std::pair < std::size_t, std::size_t>>currentPairs;
 
@@ -186,36 +190,31 @@ void CollisionSystem::CollisionCheck(const std::shared_ptr<ColliderBase>& a, con
 	if (result.pushA > 0.0f)
 	{
 		//デバッグしやすいように変数に格納
-		VECTOR& posA = a->GetFollow()->pos;
+		VECTOR& posA = a->GetFollow()->prevPos;
 		//VECTOR normal = VScale(result.normal, -1.0f);
 		VECTOR push = VScale(result.normal, result.pushA);
-		posA = VAdd(
-			posA, push
-		);
-
+		posA = VAdd(posA, push);
 		//押し出しが重力と逆方向なら重力を０にする
 		float dot = VDot(result.normal, VGet(0, 1, 0));
+		
 		if (dot > 0.5f)
 		{
-			a->GetFollowActor()->OnSupported();
-		}
-
+			a->GetFollowActor()->GetComponent<RigidBody>().Setgrounded(true);
+		}	
 	}
 	if (result.pushB > 0.0f)
 	{
 		//デバッグしやすいように変数に格納
-		VECTOR& posB = b->GetFollow()->pos;
+		VECTOR& posB = b->GetFollow()->prevPos;
 		VECTOR push = VScale(
 			VScale(result.normal,-1), result.pushB);
-		posB = VAdd(
-			posB,push
-		);
+		posB = VAdd(posB,push);
 
 		//押し出しが重力と逆方向なら重力を０にする
 		float dot = VDot(result.normal, VGet(0, 1, 0));
 		if (dot < -0.5f)
 		{
-			b->GetFollowActor()->OnSupported();
+			b->GetFollowActor()->GetComponent < RigidBody>().Setgrounded(true);
 		}
 	}
 	//衝突ペア登録

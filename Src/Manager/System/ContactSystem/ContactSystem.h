@@ -24,6 +24,7 @@ public:
 		contactRules_.clear();
 	}
 
+	void Draw(void);
 private:
 
 	//‚±‚ÌID‚ª‚Ç‚ÌID‚½‚¿‚Æ“–‚½‚Á‚Ä‚¢‚é‚©‚ðŠi”[

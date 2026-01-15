@@ -1,0 +1,22 @@
+#pragma once
+#include<vector>
+#include<memory>
+
+class ActorBase;
+
+class PhysicsSystem
+{
+public:
+
+	PhysicsSystem() = default;
+	~PhysicsSystem() = default;
+	void Update(const std::vector<std::shared_ptr<ActorBase>>& objects);
+
+	//ç≈èIà íuåàíË
+	void Resolve(const std::vector<std::shared_ptr<ActorBase>>& objects);
+
+private:
+
+
+};
+

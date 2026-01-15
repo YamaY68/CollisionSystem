@@ -18,7 +18,6 @@ Floor::~Floor(void)
 
 void Floor::SubInit(void)
 {
-	isDynamic_ = false;
     trans_.pos = VGet(0.0f, size_.y * -1, 0.0f);
 }
 

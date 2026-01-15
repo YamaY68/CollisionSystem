@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\System\PhysicsSystem\PhysicsSystem.cpp" />
+    <ClCompile Include="Src\Object\Actor\Component\RigidBodyComponent\RigidBody.cpp" />
     <ClCompile Include="Src\Manager\System\ContactSystem\ContactRuleTable.cpp" />
     <ClCompile Include="Src\Manager\System\ContactSystem\GameContactSystem.cpp" />
     <ClCompile Include="Src\Manager\System\ContactSystem\ContactSystem.cpp" />
@@ -188,6 +190,8 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\System\PhysicsSystem\PhysicsSystem.h" />
+    <ClInclude Include="Src\Object\Actor\Component\RigidBodyComponent\RigidBody.h" />
     <ClInclude Include="Src\Manager\System\ContactSystem\ContactEventInfo.h" />
     <ClInclude Include="Src\Manager\System\ContactSystem\ContactRuleTable.h" />
     <ClInclude Include="Src\Manager\System\ContactSystem\GameContactSystem.h" />

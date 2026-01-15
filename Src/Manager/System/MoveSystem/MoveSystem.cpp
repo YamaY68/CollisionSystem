@@ -1,6 +1,11 @@
 #include "MoveSystem.h"
 #include"../../../Object/Actor/ActorBase.h"
 #include"../../../Object/Actor/Component/MoveComponent/MoveComponent.h"
+#include"../../../Object/Actor/Component/RigidBodyComponent/RigidBody.h"
+
+#include"../../../Manager/SceneManager.h"
+#include"../../../Object/Actor/Camera/Camera.h"
+
 
 
 void MoveSystem::Update(const std::vector<std::shared_ptr<ActorBase>>& objects)
@@ -11,45 +16,21 @@ void MoveSystem::Update(const std::vector<std::shared_ptr<ActorBase>>& objects)
 
 			auto& move = obj->GetComponent<MoveComponent>();
 
-
+			//移動方向
 			VECTOR dir = move.GetDirection();
-
+			//正規化
 			float len = VSize(dir);
-			// 正規化
 			if (len != 0.0f)
 			{
 				dir = VScale(dir, 1.0f / len);
-				move.SetDirection(dir);
+			}
+			// Rigidbodyがあれば
+			if (obj->HasComponent<RigidBody>()) {
+				auto& rb = obj->GetComponent<RigidBody>();
+				// 力を加える
+				rb.AddForce(VScale(dir, move.GetSpeed()));
 			}
 
-			if (len == 0.0f)
-			{
-				//減速処理
-				VECTOR vel = obj->GetVelocity();
-				float yVel = vel.y;
-				vel = VScale(vel, 0.8f);
-				vel.y = yVel;
-				obj->SetVelocity(vel);
-			}
-			else
-			{
-				// 移動処理
-				//デバッグしやすいようにスピードを取得
-				float speed = move.GetSpeed();
-
-				obj->AddVelocity(VScale(dir, speed));
-
-			}
 		}
-		if (obj->IsDynamic() == false)continue;
-
-        //重力
-		obj->AddVelocity(VGet(0.0f, -0.98f, 0.0f));
-
-		obj->GetTransform().pos = VAdd(
-			obj->GetTransform().pos,
-			obj->GetVelocity()
-		);
-
     }
 }

@@ -30,3 +30,8 @@ void ContactSystem::OnEndContact(EntityID a, EntityID b,CollisionResult result)
 		});
 
 }
+
+void ContactSystem::Draw(void)
+{
+
+}
